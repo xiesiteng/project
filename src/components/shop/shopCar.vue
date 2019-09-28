@@ -95,6 +95,7 @@ export default {
       this.list[index].flag = !this.list[index].flag
     },
     pickAll () {
+      // +++
       this.selAll = !this.selAll
       let _this = this
       if (!this.selAll) {
