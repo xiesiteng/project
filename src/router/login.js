@@ -1,11 +1,11 @@
 const login = [
   {
-    path: '/login',
+    path: '/login/login',
     name: 'login',
     component: () => import('@/components/login/login')
   },
   {
-    path: '/rigster',
+    path: '/rigster/rigster',
     name: 'rigster',
     component: () => import('@/components/rigster/rigster')
   }

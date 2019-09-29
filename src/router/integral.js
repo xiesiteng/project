@@ -22,6 +22,22 @@ const integral = [
     meta: {
       title: '积分兑换'
     }
+  },
+  {
+    path: '/integral/exchange',
+    name: 'exchange',
+    component: () => import('@/components/integral/exchange'),
+    meta: {
+      title: '我的兑换'
+    }
+  },
+  {
+    path: '/integral/exchangeDetail',
+    name: 'exchangeDetail',
+    component: () => import('@/components/integral/exchangeDetail'),
+    meta: {
+      title: '兑换详情'
+    }
   }
 
 ]

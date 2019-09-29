@@ -81,7 +81,7 @@
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
-          <div class="act-item">
+          <div class="act-item" @click="toExchange">
             <div>
               <img src="../../../static/images/index/dui.png" alt="">
               <span>我的兑换</span>
@@ -118,6 +118,9 @@ export default {
     },
     toCollection () {
       this.$router.push('/person/collection')
+    },
+    toExchange () {
+      this.$router.push('/integral/exchange')
     }
   }
   }
