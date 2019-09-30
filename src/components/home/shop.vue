@@ -58,7 +58,6 @@
             placeholder="搜索商品"
             show-action
             @search="onSearch"
-            @blur="showNo"
             @cancel="onCancel"
           />
           </form>
@@ -95,8 +94,18 @@ export default {
   watch: {
 
   },
-
+  directives: {
+    focus: {
+      inserted: function (el, {value}) {
+        console.log(el,{value})
+        if (value) {
+          el.focus();
+        }
+      }
+    }
+  },
   mounted() {
+      // console.log(this.$refs)
   },
   methods: {
     onSearch () {
@@ -105,10 +114,10 @@ export default {
     choose (val) {
       this.active = val
     },
-    showNo () {
-      this.noFocus = true
-      this.onFocus = false
-    },
+    // showNo () {
+    //   this.noFocus = true
+    //   this.onFocus = false
+    // },
     showOn () {
       this.onFocus = true
       this.noFocus = false
