@@ -81,7 +81,7 @@ export default {
   .form-info{
     position: absolute;
     top: 155px;
-    left: 120px;
+    right: 20px;
   }
   .user{
     display: flex;

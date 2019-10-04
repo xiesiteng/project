@@ -5,25 +5,24 @@
         <img src="../../../static/images/index/logo1.png" alt="" class="size">
         <p>余缦缦</p>
       </div>
-      <!--注册-->
-      <button class="rigs">登录</button>
+
       <!--输入框-->
       <div class="form-info">
         <div class="user">
-          <img src="../../../static/images/index/user.png" alt="">
-          <input type="text" placeholder="设置昵称" class="userInput">
+          <img src="../../../static/images/index/phone.png" alt="">
+          <input type="text" placeholder="输入手机号" maxlength="11" class="userInput">
+        </div>
+
+        <div class="password">
+          <img src="../../../static/images/index/safe.png" alt="">
+          <input type="text" placeholder="输入验证码" class="safeInput">
+          <button class="safe">发送验证码</button>
         </div>
 
         <div class="password">
           <img src="../../../static/images/index/password.png" alt="">
-          <input type="text" placeholder="设置密码" class="userInput">
+          <input type="text" placeholder="设置新密码" class="userInput">
         </div>
-
-        <div class="password">
-          <img src="../../../static/images/index/phone.png" alt="">
-          <input type="text" placeholder="设置手机号码" class="userInput">
-        </div>
-        <!--<button class="forget">忘记密码>></button>-->
       </div>
       <!--箭头-->
       <div class="login">
@@ -73,15 +72,7 @@
     flex-direction: column;
     align-items: center;
   }
-  .rigs{
-    border: none;
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    font-size: 16px;
-    color: #333;
-    background-color: #fff;
-  }
+
   .form-info{
     position: absolute;
     top: 155px;
@@ -103,6 +94,14 @@
     color: #333;
     font-size: 16px;
   }
+  .safeInput{
+    width: 123px;
+    border: none;
+    padding-left: 10px;
+    box-sizing: border-box;
+    color: #333;
+    font-size: 16px;
+  }
   .password{
     display: flex;
     align-items: center;
@@ -111,12 +110,6 @@
     box-sizing: border-box;
     margin-bottom: 22px;
   }
-  /*.forget{*/
-    /*color: #15B0AE;*/
-    /*font-size: 13px;*/
-    /*border: none;*/
-    /*background-color: #fff;*/
-  /*}*/
   .login{
     position: absolute;
     top: 400px;
@@ -128,5 +121,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .safe{
+    border: none;
+    background-color: #000000;
+    color: #fff;
+    font-size: 13px;
+    padding: 8px 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
   }
 </style>
