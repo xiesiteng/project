@@ -54,6 +54,22 @@ const personal = [
     meta: {
       title: '收藏'
     }
+  },
+  {
+    path: '/person/myOrder',
+    name: 'myOrder',
+    component: () => import('@/components/person/myOrder'),
+    meta: {
+      title: '我的订单'
+    }
+  },
+  {
+    path: '/person/orderDetail',
+    name: 'orderDetail',
+    component: () => import('@/components/person/orderDetail'),
+    meta: {
+      title: '订单详情'
+    }
   }
 ]
 
