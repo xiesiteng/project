@@ -70,6 +70,22 @@ const personal = [
     meta: {
       title: '订单详情'
     }
+  },
+  {
+    path: '/person/logistics',
+    name: 'logistics',
+    component: () => import('@/components/person/logistics'),
+    meta: {
+      title: '查看物流'
+    }
+  },
+  {
+    path: '/person/evaluate',
+    name: 'evaluate',
+    component: () => import('@/components/person/evaluate'),
+    meta: {
+      title: '发表评价'
+    }
   }
 ]
 

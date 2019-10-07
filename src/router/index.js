@@ -8,6 +8,7 @@ import navPage from './navPage' //首页四个nav模块路由
 import assemble from './assemble' //拼团模块路由
 import integral from './integral' //积分模块路由
 import shop from './shop' //积分模块路由
+import subscribe from './subscribe'
 
 Vue.use(Router)
 
@@ -26,6 +27,7 @@ export default new Router({
     ...navPage,
     ...assemble,
     ...integral,
-    ...shop
+    ...shop,
+    ...subscribe
   ]
 })

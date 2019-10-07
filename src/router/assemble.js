@@ -30,6 +30,22 @@ const assemble = [
     meta: {
       title: '拼团成功'
     }
+  },
+  {
+    path: '/assemble/myAssemble',
+    name: 'myAssemble',
+    component: () => import('@/components/assemble/myAssemble'),
+    meta: {
+      title: '我的拼团'
+    }
+  },
+  {
+    path: '/assemble/onAssemble',
+    name: 'onAssemble',
+    component: () => import('@/components/assemble/onAssemble'),
+    meta: {
+      title: '我的拼团'
+    }
   }
 
 ]
