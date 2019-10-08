@@ -91,6 +91,7 @@
       >
         <div class="disc-wrap">
           <div class="discount-item" v-for="(item, index) in 8" :key="index">
+            <img src="../../../static/images/index/disc.png" alt="" class="dis-bg">
             <div class="dis-left">
               <span>￥ <b>20</b></span>
               <p>优惠券</p>
@@ -335,25 +336,34 @@ export default {
     padding: 50px 15px;
     box-sizing: border-box;
   }
+  .dis-bg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
   .discount-item{
     width: 100%;
-    height: 95px;
+    height: 85px;
     border-radius: 5px;
     display: flex;
     margin-bottom: 10px;
-    background: url("../../../static/images/index/disc.png") no-repeat;
+    /*background: url("../../../static/images/index/disc.png") no-repeat 100% 100%;*/
+    /*background-position: 0 center;*/
+    /*border: 1px solid #eee;*/
+    box-sizing: border-box;
+    position: relative;
   }
   .dis-left{
-    width: 30%;
+    width: 35%;
     height: 100%;
-    /*background: url("../../../static/images/index/disc.png") no-repeat;*/
+    /*background: url("../../../static/images/index/disc.png") no-repeat 0 100%;*/
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #fff;
     font-size: 14px;
-
+    position: absolute;
   }
   .dis-left b{
     font-size: 28px;
@@ -365,22 +375,28 @@ export default {
     /*border: 1px solid #eee;*/
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
+    position: absolute;
+    left: 30%;
   }
   .dis-right p{
     font-size: 16px;
     color: #333;
     font-weight: 600;
-    padding-bottom: 25px;
+    padding-bottom: 15px;
   }
   .dis-right span{
     color: #999;
     font-size: 12px;
   }
   .dis-check{
-    width: 15%;
+    width: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    left: 88%;
+    top: 50%;
+    transform: translateY(-50%);
   }
   /*.cir{
     width: 20px;

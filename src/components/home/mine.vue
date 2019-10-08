@@ -28,34 +28,34 @@
         <div class="myOrder">
           <div class="order-title">
             <p>我的订单</p>
-            <span>查看我的订单&nbsp;&nbsp;
+            <span @click="tomyOrder">查看我的订单&nbsp;&nbsp;
               <img src="../../../static/images/index/more.png" alt="" class="more">
             </span>
           </div>
           <!--四个图标-->
           <div class="four-icon">
-            <div class="icon-wrap">
+            <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
                 <span class="cir">12</span>
                 <img src="../../../static/images/index/noPay.png" alt="">
               </div>
               <p>待付款</p>
             </div>
-            <div class="icon-wrap">
+            <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
                 <span class="cir">12</span>
                 <img src="../../../static/images/index/noSend.png" alt="">
               </div>
               <p>待发货</p>
             </div>
-            <div class="icon-wrap">
+            <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
                 <span class="cir">12</span>
                 <img src="../../../static/images/index/noRecive.png" alt="">
               </div>
               <p>待收货</p>
             </div>
-            <div class="icon-wrap">
+            <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
                 <span class="cir">12</span>
                 <img src="../../../static/images/index/nobb.png" alt="">
@@ -67,14 +67,14 @@
         <!--end-->
         <!--购物车 预约 兑换 拼团-->
         <div class="activity">
-          <div class="act-item">
+          <div class="act-item" @click="toshopCar">
             <div>
               <img src="../../../static/images/index/shopCar.png" alt="">
               <span>购物车</span>
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
-          <div class="act-item">
+          <div class="act-item" @click="tomySubscribe">
             <div>
               <img src="../../../static/images/index/order.png" alt="">
               <span>我的预约</span>
@@ -88,7 +88,7 @@
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
-          <div class="act-item">
+          <div class="act-item" @click="tomyAssemble">
             <div>
               <img src="../../../static/images/index/minePing.png" alt="">
               <span>我的拼团</span>
@@ -121,6 +121,18 @@ export default {
     },
     toExchange () {
       this.$router.push('/integral/exchange')
+    },
+    tomyOrder () {
+      this.$router.push('/person/myOrder')
+    },
+    toshopCar () {
+      this.$router.push('/shop/shopCar')
+    },
+    tomySubscribe () {
+      this.$router.push('/subscribe/subscribe')
+    },
+    tomyAssemble () {
+      this.$router.push('/assemble/myAssemble')
     }
   }
   }
@@ -135,6 +147,7 @@ export default {
     min-height: 100vh!important;
     margin-bottom: 100px!important;
     padding: 0;
+    background-color: #fff;
   }
   .header{
     height: 155px;

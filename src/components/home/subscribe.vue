@@ -12,18 +12,25 @@
         </div>
         <!--tag标签-->
         <!--产品列表start-->
-        <div class="box-wrap">
-          <div class="box" v-for="(item, index) in 5" :key="index">
-            <!--多套一层div给border-->
-            <div class="box-border">
-              <div>
-                <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <div class="box-wrap">
+            <div class="box" v-for="(item, index) in list" :key="index">
+              <!--多套一层div给border-->
+              <div class="box-border">
+                <div>
+                  <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+                </div>
+                <p class="name">{{item.name}}</p>
+                <div class="order" @click="toSubscribe">预约</div>
               </div>
-              <p class="name">美白再生因子深沉抗皱</p>
-              <div class="order" @click="toSubscribe">预约</div>
             </div>
           </div>
-        </div>
+        </van-list>
         <!--产品列表end-->
       </div>
     </div>
@@ -35,10 +42,22 @@ export default {
     name: "subscribe.vue",
   data () {
     return {
+      loading: false,
+      finished: false,
       active: 0,
       subActive: 0,
       navList: ['全部','面部管理','焕肤管理','EVENT','BODY CARE'],
-      subnavList: ['全部项目', '保湿', '美白', '抗敏管理', '控油祛痘', '老化管理']
+      subnavList: ['全部项目', '保湿', '美白', '抗敏管理', '控油祛痘', '老化管理'],
+      list: [
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'},
+        {name: '美白再生因子深沉抗皱'}
+      ]
     }
   },
   components: {
@@ -47,15 +66,36 @@ export default {
   mounted() {
   },
   methods: {
-      choose (val) {
-        this.active = val
-      },
-      subChoose (val) {
-        this.subActive = val
-      },
-      toSubscribe () {
-        // this.$router.push('/login')
-      }
+    choose (val) {
+      this.active = val
+    },
+    subChoose (val) {
+      this.subActive = val
+    },
+    toSubscribe () {
+      this.$router.push('/subscribe/productDetail')
+    },
+    getItem () {
+      let obj = {name: '美白再生因子深沉抗皱++'}
+      this.list.push(obj)
+    },
+    onLoad() {
+      // 异步更新数据
+      setTimeout(() => {
+        // for (let i = 0; i < this.list.length; i++) {
+        //   this.list.push(this.list.length + 1);
+        // }
+        this.loading = true
+        this.getItem()
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.list.length >= 20) {
+          this.finished = true;
+        }
+      }, 500);
+    }
   }
 }
 </script>
@@ -64,6 +104,7 @@ export default {
   .main{
     min-height: 100vh;
     margin-bottom: 100px;
+    background-color: #fff;
   }
   .nav-wrap {}
   .nav{

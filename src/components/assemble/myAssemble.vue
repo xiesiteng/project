@@ -1,17 +1,19 @@
 <template>
-    <div>
+    <div class="main">
       <div class="nav-wrap">
         <ul class="nav">
-          <li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>
+          <!--<li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>-->
+          <li :class="[active == 1 ? 'nav-active' : '']" @click="choose(1)">拼团中</li>
+          <li :class="[active == 2 ? 'nav-active' : '']" @click="choose(2)">已完成</li>
         </ul>
       </div>
       <!--正在拼团的拼团内容-->
-      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 0">
+      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 1">
         <div class="orderNum">
           <p>2019-08-01  10:58:32</p>
           <span>拼团中</span>
         </div>
-        <div class="info">
+        <div class="info" @click="toAssem">
           <div class="info-left">
             <img src="../../../static/images/index/gznf.png" alt="" class="size">
           </div>
@@ -25,7 +27,7 @@
         </div>
       </div>
       <!--已完成的拼团-->
-      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 1">
+      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 2">
         <div class="orderNum">
           <p>2019-08-01  10:58:32</p>
           <span>拼团成功</span>
@@ -51,19 +53,26 @@ export default {
   name: "myAssemble",
   data () {
     return{
-      active: 0,
+      active: 1,
       navList: ['拼团中', '已结束']
     }
   },
   methods: {
     choose (val) {
       this.active = val
+    },
+    toAssem () {
+      this.$router.push('/assemble/onAssemble')
     }
   }
 }
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .size{
     width: 100px;
     height: 100px;

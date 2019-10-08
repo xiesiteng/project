@@ -43,6 +43,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .infoImg{
     width: 100px;
     height: 100px;

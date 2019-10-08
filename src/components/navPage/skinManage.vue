@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     toSubscribe () {
-      // this.$router.push('/login')
+      this.$router.push('/subscribe/productDetail')
     }
   }
 }
@@ -36,7 +36,7 @@ export default {
   .box-wrap {
     box-sizing: border-box;
     padding: 0 15px;
-    margin-top: 20px;
+    padding-top: 20px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;

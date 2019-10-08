@@ -79,6 +79,10 @@
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .address-wrap{
     margin-bottom: 60px;
   }

@@ -38,14 +38,24 @@
       <!--按钮-->
       <div class="button-group">
         <button>加入购物车</button>
-        <button>立即购买</button>
+        <button @click="buyNow">立即购买</button>
       </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "detail"
+  name: "detail",
+  data () {
+    return{
+
+    }
+  },
+  methods:{
+    buyNow () {
+      this.$router.push('/shop/submitOrder')
+    }
+  }
 }
 </script>
 
@@ -126,6 +136,10 @@ export default {
   .button-group{
     display: flex;
     align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
   }
   .button-group button{
     width: 50%;

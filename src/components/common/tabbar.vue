@@ -1,6 +1,10 @@
 <template>
   <div>
-    <van-tabbar v-model="active" route>
+    <van-tabbar
+      v-model="active"
+      route
+      class="tab"
+    >
       <van-tabbar-item
         replace
         to="/home/index"
@@ -79,4 +83,6 @@ export default {
 <style scoped lang="stylus">
 .font_color
   color #000
+.tab
+  z-index 999!important
 </style>

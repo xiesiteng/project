@@ -29,31 +29,39 @@
           </div>
           <!--nav-->
           <!--搜索结果-->
-          <div class="search-res" v-show="true">
+          <div class="search-res" v-show="false">
             <p>搜索到1个结果</p>
           </div>
           <!--搜索结果-->
           <!--商品信息start-->
-          <div class="box-wrap">
-            <div class="box" v-for="(item, index) in 5" :key="index">
-              <!--多套一层div给border-->
-              <div class="box-border">
-                <div>
-                  <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <div class="box-wrap">
+              <div class="box" v-for="(item, index) in list" :key="index" @click="toDetail">
+                <!--多套一层div给border-->
+                <div class="box-border">
+                  <div>
+                    <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+                  </div>
+                  <p class="name">{{item.name}}</p>
+                  <div class="money">￥{{item.price}}</div>
                 </div>
-                <p class="name">美白再生因子深沉抗皱</p>
-                <div class="money">￥8999</div>
               </div>
             </div>
-          </div>
+          </van-list>
           <!--商品信息end-->
         </div>
-        <!--聚焦搜索框-->
 
+        <!--聚焦搜索框start-->
         <div class="onFocus" v-show="onFocus">
           <!--搜索框-->
           <form action="/">
           <van-search
+            ref="inputs"
             v-model="value"
             placeholder="搜索商品"
             show-action
@@ -61,6 +69,12 @@
             @cancel="onCancel"
           />
           </form>
+          <!--<div class="search-wrap">
+            <form action="/" style="width: 90%;">
+              <input type="search" autofocus class="search-input" placeholder="请输入商品名称" ref="inputs" @keypress="search">
+            </form>
+            <span @click="onCancel">取消</span>
+          </div>-->
           <div class="lately">
             <div>
               <img src="../../../static/images/index/orderTime.png" alt="">
@@ -75,12 +89,13 @@
             </ul>
           </div>
         </div>
-        <!--聚焦搜索框-->
+        <!--聚焦搜索框end-->
       </div>
     </div>
 </template>
 
 <script>
+import { Toast } from 'vant'
 export default {
     name: "shop.vue",
     data () {
@@ -88,7 +103,17 @@ export default {
         value: '',
         active: 0,
         noFocus: true,
-        onFocus: false
+        onFocus: false,
+        loading: false,
+        finished: false,
+        list: [
+          {name: '美白再生因子深沉抗皱', price: '599.00'},
+          {name: '美白再生因子深沉抗皱', price: '599.00'},
+          {name: '美白再生因子深沉抗皱', price: '599.00'},
+          {name: '美白再生因子深沉抗皱', price: '599.00'},
+          {name: '美白再生因子深沉抗皱', price: '599.00'},
+          {name: '美白再生因子深沉抗皱', price: '599.00'}
+        ]
       }
     },
   watch: {
@@ -109,8 +134,22 @@ export default {
   },
   methods: {
     onSearch () {
-        // this.value = '147'
+      Toast('搜索')
       },
+    /*search (event) {
+      if (event.keyCode == 13) { //如果按的是enter键 13是enter
+        event.preventDefault(); //禁止默认事件（默认是换行）
+        console.log(event.target.value)
+        Toast("点击了确认")
+      }
+    },*/
+    changfouce(){
+      this.$nextTick((x)=>{
+        /*this.$refs.inputs.focus();*/
+        // input自动聚焦
+        this.$refs.inputs.firstChild.firstChild.childNodes[1].firstChild.firstChild.focus()
+      })
+    },
     choose (val) {
       this.active = val
     },
@@ -121,10 +160,35 @@ export default {
     showOn () {
       this.onFocus = true
       this.noFocus = false
+      this.changfouce()
     },
     onCancel () {
       this.noFocus = true
       this.onFocus = false
+    },
+    toDetail () {
+      this.$router.push('/shop/detail')
+    },
+    getItem () {
+      let obj = {name: '美白再生因子深沉抗皱++', price: '399.99'}
+      this.list.push(obj)
+    },
+    onLoad() {
+      // 异步更新数据
+      setTimeout(() => {
+        // for (let i = 0; i < this.list.length; i++) {
+        //   this.list.push(this.list.length + 1);
+        // }
+        this.loading = true
+        this.getItem()
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.list.length >= 20) {
+          this.finished = true;
+        }
+      }, 500);
     }
   }
 }
@@ -134,6 +198,7 @@ export default {
   .main{
     min-height: 100vh;
     margin-bottom: 100px;
+    background-color: #fff;
   }
   .nav-wrap {}
   .nav{
@@ -255,5 +320,23 @@ export default {
     color: #999;
     padding: 0 15px;
     box-sizing: border-box;
+  }
+  .search-wrap{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 15px;
+  }
+  .search-input{
+    width: 90%;
+    height: 30px;
+    line-height: 30px;
+    background: url("../../../static/images/index/search.png") no-repeat;
+    background-position: 3% center;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+    padding-left: 10%;
   }
 </style>

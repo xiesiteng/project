@@ -102,6 +102,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .size{
     width: 100px;
     height: 100px;
@@ -253,6 +257,8 @@ export default {
     text-align: center;
     font-size: 16px;
     color: #fff;
+    position: fixed;
+    bottom: 0;
     position: fixed;
     bottom: 0;
   }

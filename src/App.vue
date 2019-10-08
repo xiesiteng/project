@@ -22,6 +22,8 @@ export default {
 /*}*/
   #app {
     font-size: 14px;
+    background-color: #fff;
+    min-height: 100vh;
   }
   #app p {
     margin: 0;

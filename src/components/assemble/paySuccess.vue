@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <div class="success">
         <img src="../../../static/images/index/success.png" alt="">
       </div>
@@ -15,11 +15,16 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .success{
     display: flex;
     justify-content: center;
     width: 100%;
-    margin: 52px auto;
+    padding: 52px 0;
+    box-sizing: border-box;
   }
   .succ-tips{
     font-size: 18px;

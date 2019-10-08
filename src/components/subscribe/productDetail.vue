@@ -194,7 +194,7 @@
     background-color: #fff;
     box-sizing: border-box;
     padding: 0 15px;
-    padding-bottom: 30px;
+    padding-bottom: 80px;
   }
   .intro-title{
     display: flex;
@@ -216,5 +216,7 @@
     color: #fff;
     font-size: 16px;
     text-align: center;
+    position: fixed;
+    bottom: 0;
   }
 </style>

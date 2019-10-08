@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <!--无商品-->
       <div class="wrap" v-show="false">
         <div class="hasNo">
@@ -15,7 +15,8 @@
           <template slot="default">
             <div class="pro-wrap" v-show="true">
               <div class="pro-left">
-                <div class="box" v-show="!item.flag" @click="pick(index)"></div>
+                <!--<div class="box" v-show="!item.flag" @click="pick(index)"></div>-->
+                <img src="../../../static/images/index/no_sel.png" alt="" v-show="!item.flag" @click="pick(index)">
                 <img src="../../../static/images/index/sel.png" alt="" v-show="item.flag" @click="pick(index)">
               </div>
               <div class="pro-right">
@@ -43,7 +44,8 @@
       <div class="balance">
         <div class="total">
           <div class="all">
-            <div class="box" v-show="!selAll" @click="pickAll"></div>
+            <!--<div class="box" v-show="!selAll" @click="pickAll"></div>-->
+            <img src="../../../static/images/index/no_sel.png" alt="" v-show="!selAll" @click="pickAll">
             <img src="../../../static/images/index/sel.png" alt="" v-show="selAll" @click="pickAll">
             <p>全选</p>
           </div>
@@ -129,6 +131,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .size{
     width: 100px;
     height: 100px;
@@ -183,11 +189,12 @@ export default {
   .all img{
     border: 1px solid #fff;
   }
-  .box{
+  /*.box{
     width: 18px;
     height: 18px;
     border: 1px solid #eee;
-  }
+    box-sizing: border-box;
+  }*/
   .pro-wrap{
     display: flex;
     align-items: center;

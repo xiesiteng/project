@@ -111,6 +111,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .new-wrap{
     padding: 0 15px;
     box-sizing: border-box;

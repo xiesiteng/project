@@ -38,7 +38,7 @@
         this.subActive = val
       },
       toSubscribe () {
-        // this.$router.push('/login')
+        this.$router.push('/subscribe/productDetail')
       }
     }
   }

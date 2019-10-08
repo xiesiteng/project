@@ -55,6 +55,8 @@ export default {
   .main{
     padding: 0 15px;
     box-sizing: border-box;
+    min-height: 100vh;
+    background-color: #fff;
   }
   .item {
     width: 100%;

@@ -126,6 +126,7 @@ export default {
   }
   .nav-item{
     padding: 10px 10px;
+    box-sizing: border-box;
   }
   .nav-item-active{
     border-bottom: 2px solid #15B0AE;

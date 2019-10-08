@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <div class="coll-wrap" v-show="false">
         <div class="coll-img">
           <img src="../../../static/images/index/nocol.png" alt="">
@@ -35,12 +35,16 @@
 </template>
 
 <script>
-    export default {
-        name: "collection"
-    }
+export default {
+    name: "collection"
+}
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .coll-img{
     display: flex;
     justify-content: center;
@@ -113,6 +117,7 @@
   }
   .include{
     display: flex;
+    align-items: baseline;
   }
   em{
     padding-top: 10px;

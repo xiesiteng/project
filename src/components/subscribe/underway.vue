@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <div class="info-item">
       <div class="info-title">
         <img src="../../../static/images/index/store.png" alt="">
@@ -56,6 +56,10 @@
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .info-title{
     display: flex;
     align-items: center;

@@ -7,6 +7,7 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import 'lib-flexible/flexible'
 import vueWechatTitle from 'vue-wechat-title'
+import store from "./store"
 Vue.use(vueWechatTitle)
 
 Vue.use(Vant)
@@ -17,6 +18,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <div class="nav-wrap">
         <ul class="nav">
           <li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>
@@ -50,6 +50,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    background-color: #fff;
+    min-height: 100vh;
+  }
   .size{
     width: 100px;
     height: 100px;

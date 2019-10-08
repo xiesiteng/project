@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <div class="exc-content">
         <div class="content-left">
           <img src="../../../static/images/index/gznf.png" alt="" class="size">
@@ -48,6 +48,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .size{
     width: 100px;
     height: 100px;

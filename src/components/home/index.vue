@@ -37,17 +37,27 @@
           <p class="sub_title">Time-limited  Assemble</p>
           <!--拼团头部-->
           <div class="assemble-wrap">
-            <div :class="['assemble-title', this.active == 0 ? 'assemble-title-active' : '']" @click="choose(0)">
+            <div :class="['assemble-title', active == 1 ? 'assemble-title-active' : '']" @click="choose(1)">
               <p>超值拼团</p>
             </div>
-            <div :class="['assemble-title', this.active == 1 ? 'assemble-title-active' : '']" @click="choose(1)">
+            <div :class="['assemble-title', active == 2 ? 'assemble-title-active' : '']" @click="choose(2)">
               <p>限时拼团</p>
             </div>
           </div>
           <!--限时拼团部分-->
           <div class="time_ass">
             <div class="time-title">
-              <div>倒计时</div>
+              <div class="countDown" v-show="active == 2">
+                <p>倒计时</p>
+                <van-count-down :time="time">
+                  <template v-slot="timeData">
+                    <span class="item">{{ timeData.hours }}</span> :
+                    <span class="item">{{ timeData.minutes }}</span> :
+                    <span class="item">{{ timeData.seconds }}</span>
+                  </template>
+                </van-count-down>
+              </div>
+
               <p class="scan" @click='toMore'>查看更多
                 <span>
                   <img src="../../../static/images/index/more.png" alt="" class="more_size">
@@ -72,7 +82,7 @@
                     <p class="price">399.9</p>
                   </div>
                   <span class="pre-price">￥599.9</span>
-                  <button class="ping">去拼团</button>
+                  <button class="ping" @click="toAssem">去拼团</button>
                 </div>
               </div>
             </div>
@@ -118,7 +128,7 @@
           </div>
 
           <div class="box-wrap">
-            <div class="box" v-for="(item, index) in 4" :key="index">
+            <div class="box" v-for="(item, index) in 4" :key="index" @click="toIntegralDetail">
               <!--多包一层div给border效果-->
               <div style="border: 1px solid #eee">
                 <div>
@@ -138,7 +148,8 @@
 </template>
 
 <script>
-  import tabBar from '../common/tabbar'
+import tabBar from '../common/tabbar'
+import axios from 'axios'
 export default {
     name: "index.vue",
   data () {
@@ -172,20 +183,22 @@ export default {
           text: 'BODY CARE'
         }
       ],
-      active: 0
+      active: 2,
+      time: 10 * 60 * 60 * 1000
     }
   },
   components: {
     tabBar
   },
   mounted () {
+      /*console.log(localStorage.getItem('token'))*/
   },
   methods: {
       choose (val) {
-        if (val == 0) {
-          this.active = 0
-        } else {
+        if (val == 1) {
           this.active = 1
+        } else {
+          this.active = 2
         }
       },
     toTurn (val) {
@@ -209,12 +222,37 @@ export default {
     },
     toIntegral () {
       this.$router.push('/integral/integral')
+    },
+    toAssem () {
+      this.$router.push('/assemble/assemblePay')
+    },
+    toIntegralDetail () {
+      this.$router.push('/integral/detail')
     }
   }
 }
 </script>
 
 <style scoped lang="stylus">
+.main
+  background-color #fff
+.countDown
+  display flex
+  align-items center
+  p
+    box-sizing border-box
+    padding-right 10px
+.item
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  /*margin-right: 5px;*/
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  background-color: #15B0AE;
+  border-radius: 50%;
 p
   margin 0
 .more_size
@@ -244,7 +282,7 @@ p
     display flex
     align-items center
     box-sizing border-box
-    padding 0 15px
+    padding 15px
     .notice-icon
       width 15px
       height 15px
@@ -307,8 +345,11 @@ p
       align-items center
       padding 20px 15px 0 15px
       box-sizing border-box
+      position relative
       .scan
         color #999
+        position absolute
+        right 15px
         /*.more_size
           width 7px
           height 12px*/

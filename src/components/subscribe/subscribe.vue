@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <div class="nav-wrap">
       <ul class="nav">
         <li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>
@@ -12,7 +12,7 @@
         <!--<span>拼团中</span>-->
         <img src="../../../static/images/index/delete.png" alt="">
       </div>
-      <div class="info">
+      <div class="info" @click="toUnderway">
         <div class="info-left">
           <img src="../../../static/images/index/gznf.png" alt="" class="size">
         </div>
@@ -32,7 +32,7 @@
         <!--<span>拼团成功</span>-->
         <img src="../../../static/images/index/delete.png" alt="">
       </div>
-      <div class="info">
+      <div class="info" @click="toCompleted">
         <div class="info-left">
           <img src="../../../static/images/index/gznf.png" alt="" class="size">
         </div>
@@ -60,12 +60,22 @@
     methods: {
       choose (val) {
         this.active = val
+      },
+      toUnderway () {
+        this.$router.push('/subscribe/underway')
+      },
+      toCompleted () {
+        this.$router.push('/subscribe/completed')
       }
     }
   }
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .size{
     width: 100px;
     height: 100px;

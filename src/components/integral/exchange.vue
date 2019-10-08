@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
       <div class="exchange" v-for="(item, index) in 3" :key="index">
         <div class="exc-title">
           <p>预约编号：20190801001</p>
@@ -37,6 +37,10 @@ export default {
 </script>
 
 <style scoped>
+  .main{
+    min-height: 100vh;
+    background-color: #fff;
+  }
   .size{
     width: 100px;
     height: 100px;
@@ -80,11 +84,12 @@ export default {
   }
   .content-right button{
     border: none;
-    width: 70px;
+    width: 80px;
     text-align: center;
     height: 28px;
     line-height: 28px;
     font-size: 13px;
     color: #424242;
+    background-color: #EEEEEE;
   }
 </style>
