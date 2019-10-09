@@ -112,7 +112,7 @@
   }
   .login{
     position: absolute;
-    top: 400px;
+    top: 360px;
     right: 30px;
     width: 192px;
     height: 192px;

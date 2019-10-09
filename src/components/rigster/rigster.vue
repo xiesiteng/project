@@ -6,27 +6,27 @@
         <p>余缦缦</p>
       </div>
       <!--注册-->
-      <button class="rigs">登录</button>
+      <button class="rigs" @click="toLogin">登录</button>
       <!--输入框-->
       <div class="form-info">
         <div class="user">
           <img src="../../../static/images/index/user.png" alt="">
-          <input type="text" placeholder="设置昵称" class="userInput">
+          <input type="text" placeholder="设置昵称" class="userInput" v-model="username" @blur="leave">
         </div>
 
         <div class="password">
           <img src="../../../static/images/index/password.png" alt="">
-          <input type="text" placeholder="设置密码" class="userInput">
+          <input type="password" placeholder="设置密码" class="userInput" v-model="password" @blur="leave">
         </div>
 
         <div class="password">
           <img src="../../../static/images/index/phone.png" alt="">
-          <input type="text" placeholder="设置手机号码" class="userInput">
+          <input type="tel" placeholder="设置手机号码" maxlength="11"  class="userInput" v-model="phone" @blur="leave">
         </div>
         <!--<button class="forget">忘记密码>></button>-->
       </div>
       <!--箭头-->
-      <div class="login">
+      <div class="login" @click="Rigster">
         <img src="../../../static/images/index/arrow.png" alt="">
       </div>
     </div>
@@ -34,20 +34,54 @@
 </template>
 
 <script>
-  export default {
-    name: "rigster",
-    data () {
-      return {
+import axios from 'axios'
+import { Toast } from 'vant'
+export default {
+  name: "rigster",
+  data () {
+    return {
+      username: '',
+      password: '',
+      phone: ''
+    }
+  },
+  mounted() {
 
+  },
+  methods: {
+    Rigster () {
+      if (!this.username) {
+        Toast('请输入昵称')
+        return false
+      }
+      if (!this.password) {
+        Toast('请输入密码')
+        return false
+      }
+      if (!this.phone) {
+        Toast('请输入输入手机号码')
+        return false
+      }
+      axios.get('/lan/register?admin=' + this.username + '&password=' + this.password + '&mobile=' + this.phone).then(this.rigSucc).catch(err => console.log(err))
+      // axios.get('/lan/user_show').then(this.rigSucc).catch()
+    },
+    rigSucc (res) {
+      console.log(res.data)
+      if (res.data.code == 2000) {
+        this.$router.push('/rigster/success')
+      }
+      if (res.data.code == 4000) {
+        Toast(res.data.data.msg)
       }
     },
-    mounted() {
-
+    toLogin () {
+      this.$router.push('/login/login')
     },
-    methods: {
-
+    leave() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
   }
+}
 </script>
 
 <style scoped>
@@ -57,6 +91,7 @@
   }
   .main{
     width: 100%;
+    height: 100%;
     min-height: 100vh;
     background: url("../../../static/images/index/loginBG.png") no-repeat;
     background-size: 100% 100%;
@@ -119,7 +154,7 @@
   /*}*/
   .login{
     position: absolute;
-    top: 400px;
+    top: 360px;
     right: 30px;
     width: 192px;
     height: 192px;

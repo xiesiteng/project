@@ -6,23 +6,23 @@
             <p>余缦缦</p>
           </div>
           <!--注册-->
-          <button class="rigs">注册</button>
+          <button class="rigs" @click="toRigster">注册</button>
           <!--输入框-->
           <div class="form-info">
             <div class="user">
               <img src="../../../static/images/index/user.png" alt="">
-              <input type="text" placeholder="请输入昵称或手机号" class="userInput">
+              <input type="text" placeholder="请输入昵称或手机号" class="userInput" v-model="username" @blur="leave">
             </div>
 
             <div class="password">
               <img src="../../../static/images/index/password.png" alt="">
-              <input type="text" placeholder="请输入密码" class="userInput">
+              <input type="text" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave">
             </div>
 
             <button class="forget">忘记密码>></button>
           </div>
           <!--箭头-->
-          <div class="login">
+          <div class="login" @click="Login">
             <img src="../../../static/images/index/arrow.png" alt="">
           </div>
         </div>
@@ -30,18 +30,36 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: "login.vue",
   data () {
       return {
-
+        username: '',
+        password: ''
       }
   },
   mounted() {
 
   },
   methods: {
-
+    leave() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    },
+    toRigster () {
+      this.$router.push('/rigster/rigster')
+    },
+    Login () {
+      axios.get('/lan/login?admin=' + this.username + '&password=' + this.password).then(this.loginSucc).catch(err => console.log(err))
+    },
+    loginSucc (res) {
+      // console.log(res.data.data.tk)
+      let token = res.data.data.tk
+      if (res.data.code == 2000) {
+        this.$store.commit('setToken', token)
+        console.log(localStorage.getItem('token'))
+      }
+    }
   }
 }
 </script>
@@ -115,7 +133,7 @@ export default {
   }
   .login{
     position: absolute;
-    top: 400px;
+    top: 360px;
     right: 30px;
     width: 192px;
     height: 192px;

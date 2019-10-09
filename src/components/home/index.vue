@@ -191,9 +191,15 @@ export default {
     tabBar
   },
   mounted () {
-      /*console.log(localStorage.getItem('token'))*/
+      this.init()
   },
   methods: {
+    init () {
+      axios.get('/lan/_index').then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      console.log(res.data)
+    },
       choose (val) {
         if (val == 1) {
           this.active = 1

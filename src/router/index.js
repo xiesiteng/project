@@ -52,8 +52,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-
-  if(to.path == '/home/index' || to.path == '/login/login' || to.path == '/home/subscribe' || to.path == '/home/shop' || to.path == '/home/mine') {
+  let path = to.path == '/home/index' || to.path == '/login/login' || to.path == '/login/forget' || to.path == '/home/subscribe' || to.path == '/home/shop' || to.path == '/home/mine' || to.path == '/rigster/rigster' || to.path == '/rigster/success' || to.path == '/login/success'
+  if(path) {
     next();
   } else {
 
