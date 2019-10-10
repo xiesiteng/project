@@ -5,7 +5,8 @@
           <div class="person-item">
             <span>头像</span>
             <div class="right-center">
-              <img src="../../../static/images/index/logo1.png" alt="" class="headImg">
+              <!--<img src="../../../static/images/index/logo1.png" alt="" class="headImg">-->
+              <img :src="headimgurl" alt="" class="headImg">
               <img src="../../../static/images/index/more_small.png" alt="">
             </div>
           </div>
@@ -13,7 +14,7 @@
           <div class="person-item" @click="tochangeName">
             <span>昵称</span>
             <div class="right-center">
-              <span>Forgot</span>
+              <span>{{info.nickname}}</span>
               <img src="../../../static/images/index/more_small.png" alt="">
             </div>
           </div>
@@ -21,7 +22,7 @@
           <div class="person-item">
             <span>手机号</span>
             <div class="right-center">
-              <p>18283350462</p>
+              <p>{{info.mobile}}</p>
             </div>
           </div>
           <!--地址-->
@@ -39,10 +40,16 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "personal",
    data () {
-      return {}
+      return {
+        info: {}
+      }
+   },
+   mounted () {
+    this.getInfo ()
    },
    methods: {
      toAddress () {
@@ -50,6 +57,12 @@ export default {
      },
      tochangeName () {
        this.$router.push('/person/changeName')
+     },
+     getInfo () {
+       axios.get('/lan/user_show').then(this.getInfoSucc).catch(err => console.log(err))
+     },
+     getInfoSucc (res) {
+       this.info = res.data.data
      }
    }
   }

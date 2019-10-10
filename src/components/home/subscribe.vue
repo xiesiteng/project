@@ -3,16 +3,18 @@
       <div class="main">
         <div class="nav-wrap">
           <ul class="nav">
-            <li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>
+            <li v-for="(item, index) in goods_category" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item.name}}</li>
           </ul>
         </div>
         <!--tag标签-->
-        <div class="subnav-wrap" v-show="active !== 0">
-          <van-tag round v-for="(item, index) in subnavList" :key="index" :class="['subnav' ,subActive == index ? 'subnav-active' : '']" @click="subChoose(index)">{{item}}</van-tag>
+        <div class="subnav-wrap" v-show="subnavList.length !== 0">
+          <van-tag round v-for="(item, index) in subnavList" :key="index" :class="['subnav' ,subActive == index ? 'subnav-active' : '']" @click="subChoose(index)">{{item.name}}</van-tag>
         </div>
         <!--tag标签-->
         <!--产品列表start-->
-        <van-list
+        <!--<van-list
+          immediate-check:false
+          offset:50
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
@@ -20,83 +22,141 @@
         >
           <div class="box-wrap">
             <div class="box" v-for="(item, index) in list" :key="index">
-              <!--多套一层div给border-->
+              &lt;!&ndash;多套一层div给border&ndash;&gt;
               <div class="box-border">
                 <div>
-                  <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+                  &lt;!&ndash;<img src="../../../static/images/index/gznf.png" alt="" class="box-img">&ndash;&gt;
+                  <img :src="item.original_img" alt="" class="box-img">
                 </div>
-                <p class="name">{{item.name}}</p>
+                <p class="name">{{item.goods_name}}</p>
                 <div class="order" @click="toSubscribe">预约</div>
               </div>
             </div>
           </div>
-        </van-list>
+        </van-list>-->
+        <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+        <div class="box-wrap">
+          <div class="box" v-for="(item, index) in list" :key="index">
+            <!--多套一层div给border-->
+            <div class="box-border">
+              <div>
+                <!--<img src="../../../static/images/index/gznf.png" alt="" class="box-img">-->
+                <img :src="item.original_img" alt="" class="box-img">
+              </div>
+              <p class="name">{{item.goods_name}}</p>
+              <div class="order" @click="toSubscribe(item.goods_id)">预约</div>
+            </div>
+          </div>
+        </div>
+        </scroll>
         <!--产品列表end-->
       </div>
     </div>
 </template>
 
 <script>
-
+import axios from 'axios'
+// import scroll from '../common/scroll'
+import scroll from '../common/scroll';
 export default {
     name: "subscribe.vue",
   data () {
     return {
-      loading: false,
-      finished: false,
+      enableLoadMore: true,
+      // loading: false,
+      // finished: false,
+      over: false,
+      flag: false,
+      page: 1,
+      cat_id: '',
       active: 0,
       subActive: 0,
-      navList: ['全部','面部管理','焕肤管理','EVENT','BODY CARE'],
-      subnavList: ['全部项目', '保湿', '美白', '抗敏管理', '控油祛痘', '老化管理'],
-      list: [
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'},
-        {name: '美白再生因子深沉抗皱'}
-      ]
+      subnavList: [],
+      list: [],
+      goods_category: []
     }
   },
   components: {
-
+    scroll
   },
   mounted() {
+      this.getGoods()
   },
   methods: {
-    choose (val) {
-      this.active = val
+    getGoods () {
+      axios.get('/lan/goods_list?is_order=1&page=' + this.page + '&cat_id=' + this.cat_id).then(this.getGoodsSucc).catch(err => console.log(err))
     },
-    subChoose (val) {
-      this.subActive = val
+    getGoodsSucc (res) {
+      // console.log(res.data)
+      if (res.data.data.list.length == 0) {
+        this.enableLoadMore = false
+      }
+      // let obj = {name: '全部', son: []}
+      this.list = this.list.concat(res.data.data.list)
+      this.goods_category = res.data.data.goods_category
+      // this.goods_category.unshift(obj)
     },
-    toSubscribe () {
-      this.$router.push('/subscribe/productDetail')
+    choose (index) {
+      this.active = index
+      this.subnavList = this.goods_category[index].son
+      if (this.subnavList.length == 0) {
+        this.cat_id = this.goods_category[index].id
+      } else {
+        this.cat_id = this.goods_category[index].son[0].id
+      }
+      // console.log(this.cat_id)
+      this.page = 1
+      this.list = []
+      this.enableLoadMore = true
+      this.getGoods()
+      // console.log(this.goods_category[index])
     },
-    getItem () {
-      let obj = {name: '美白再生因子深沉抗皱++'}
-      this.list.push(obj)
+    subChoose (index) {
+      this.subActive = index
+      this.cat_id = this.subnavList[index].id
+      // console.log(this.subnavList)
+      this.page = 1
+      this.list = []
+      this.enableLoadMore = true
+      // console.log(this.goods_category)
+      this.getGoods()
     },
-    onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        // for (let i = 0; i < this.list.length; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-        this.loading = true
-        this.getItem()
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 20) {
-          this.finished = true;
+    toSubscribe (goods_id) {
+      this.$router.push({path: '/subscribe/productDetail', query: {goods_id: goods_id}})
+    },
+    onLoadMore(done) {
+      setTimeout(()=>{
+        if(!this.enableLoadMore) {
+          return
         }
-      }, 500);
+        this.page++
+        this.getGoods();
+        done();
+      }, 200)
+    },
     }
-  }
+    // onLoad() {
+    //   console.log(this.list.length, 11)
+    //   if (this.over) {
+    //     this.loading = false;
+    //     this.finished = true;
+    //     return false
+    //   }
+    //   // 异步更新数据
+    //   setTimeout(() => {
+    //
+    //     this.loading = true
+    //     this.page++
+    //     this.getGoods()
+    //     // 加载状态结束
+    //     this.loading = false;
+    //
+    //     // 数据全部加载完成
+    //     // if (this.over) {
+    //     //   this.finished = true;
+    //     // }
+    //   }, 500);
+    // }
 }
 </script>
 

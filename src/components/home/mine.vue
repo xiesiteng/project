@@ -3,22 +3,23 @@
       <div class="main">
         <div class="header">
           <div class="person-info">
-            <img src="../../../static/images/index/logo1.png" alt="" class="head-img">
-            <p>何大米</p>
+            <!--<img src="../../../static/images/index/logo1.png" alt="" class="head-img">-->
+            <img :src="info.headimgurl" alt="" class="head-img">
+            <p>{{info.nickname}}</p>
             <img src="../../../static/images/index/more.png" alt="" class="more-size" @click="toPersonal">
           </div>
           <!--优惠积分收藏-->
           <div class="sec-info">
             <ul class="sec-info-item" @click="toDiscount">
-              <li class="black">2</li>
+              <li class="black">{{info.coupon_num}}</li>
               <li class="gray">优惠券</li>
             </ul>
             <ul class="sec-info-item" @click="toIntegral">
-              <li class="black">2</li>
+              <li class="black">{{info.pay_points}}</li>
               <li class="gray">积分</li>
             </ul>
             <ul class="sec-info-item" @click="toCollection">
-              <li class="black">2</li>
+              <li class="black">{{info.collect_num}}</li>
               <li class="gray">收藏</li>
             </ul>
           </div>
@@ -36,28 +37,28 @@
           <div class="four-icon">
             <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
-                <span class="cir">12</span>
+                <span class="cir" v-show="info.wait_pay_order_num !== 0">{{info.wait_pay_order_num}}</span>
                 <img src="../../../static/images/index/noPay.png" alt="">
               </div>
               <p>待付款</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
-                <span class="cir">12</span>
+                <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/noSend.png" alt="">
               </div>
               <p>待发货</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
-                <span class="cir">12</span>
+                <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/noRecive.png" alt="">
               </div>
               <p>待收货</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder">
               <div class="icon">
-                <span class="cir">12</span>
+                <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/nobb.png" alt="">
               </div>
               <p>待评价</p>
@@ -101,10 +102,16 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "mine.vue",
   data () {
-      return {}
+    return {
+      info: {}
+    }
+  },
+  mounted () {
+    this.getInfo()
   },
   methods: {
     toPersonal () {
@@ -133,6 +140,13 @@ export default {
     },
     tomyAssemble () {
       this.$router.push('/assemble/myAssemble')
+    },
+    getInfo () {
+      axios.get('/lan/user_show').then(this.getInfoSucc).catch(err => console.log(err))
+    },
+    getInfoSucc (res) {
+      // console.log(res.data.data)
+      this.info = res.data.data
     }
   }
   }

@@ -16,7 +16,7 @@
 
             <div class="password">
               <img src="../../../static/images/index/password.png" alt="">
-              <input type="text" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave">
+              <input type="password" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave">
             </div>
 
             <button class="forget">忘记密码>></button>
@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios'
+import { Toast } from 'vant'
 export default {
     name: "login.vue",
   data () {
@@ -50,6 +51,7 @@ export default {
       this.$router.push('/rigster/rigster')
     },
     Login () {
+
       axios.get('/lan/login?admin=' + this.username + '&password=' + this.password).then(this.loginSucc).catch(err => console.log(err))
     },
     loginSucc (res) {
@@ -57,7 +59,8 @@ export default {
       let token = res.data.data.tk
       if (res.data.code == 2000) {
         this.$store.commit('setToken', token)
-        console.log(localStorage.getItem('token'))
+        this.$router.push('/home/index')
+        // console.log(localStorage.getItem('token'))
       }
     }
   }

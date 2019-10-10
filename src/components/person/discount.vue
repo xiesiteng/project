@@ -4,11 +4,11 @@
         <div class="discount" v-for="(item, index) in 3" :key="index">
           <img src="../../../static/images/index/disc.png" alt="" class="bg">
           <div class="dis-left">
-            <span>￥ <b>20</b></span>
+            <span>￥ <b>{{item.money}}</b></span>
             <p>优惠券</p>
           </div>
           <div class="dis-right">
-            <p>全场消费满100可用</p>
+            <p>全场消费满{{item.condition}}可用</p>
             <span>2019-09-01前有效</span>
           </div>
         </div>
@@ -17,8 +17,25 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-    name: "discount"
+  name: "discount",
+  data () {
+    return{
+      disList: []
+    }
+  },
+  mounted () {
+    this.getDis()
+  },
+  methods: {
+    getDis () {
+      axios.get('/lan/coupon_list?type=0').then(this.getDisSucc).catch(err => console.log(err))
+    },
+    getDisSucc (res) {
+      this.disList = res.data.data.result
+    }
+  }
 }
 </script>
 

@@ -1,17 +1,18 @@
 <template>
   <div class="main">
     <div>
-      <img src="../../../static/images/index/box.png" alt="" class="imgSize">
+      <!--<img src="../../../static/images/index/box.png" alt="" class="imgSize">-->
+      <img :src="goods_images" alt="" class="imgSize">
     </div>
     <!--信息-->
     <div class="pro">
       <div class="pro-info">
-        <p>￥<em>399.9</em></p>
+        <p>￥<em>{{proInfo.shop_price}}</em></p>
         <!--<span class="pre-price">￥599.9</span>-->
-        <p class="num">预约数:598</p>
+        <p class="num">预约数:{{proInfo.store_count}}</p>
       </div>
       <div class="pro-name">
-        <p>【光子嫩肤】全面解决皮肤暗沉/毛孔粗大/粗糙/祛斑/小细纹  重回少女肌】</p>
+        <p>{{proInfo.goods_name}}</p>
       </div>
     </div>
     <!--公告-->
@@ -19,36 +20,7 @@
       <img src="../../../static/images/index/laba.png" alt="" class="noticeImg">
       <p>积分兑换的商品不支持服务退换</p>
     </div>
-    <!--促销-->
-    <!--<div class="cux">
-      <span>促销</span>
-      <p>【3人团】拼团结束恢复￥599.9，还剩29个名额</p>
-    </div>-->
-    <!--玩法-->
-    <!--<div class="play">
-      <div class="play-head">
-        <span>拼团玩法</span>
-        <div class="guize">
-          <span>查看规则</span>
-          <img src="../../../static/images/index/more_small.png" alt="">
-        </div>
-      </div>
-      <img src="../../../static/images/index/buzou.png" alt="" class="bzImg">
-      <div class="buzou">
-        <div class="buzou-item">
-          <span>支付</span>
-          <span>开团/参团</span>
-        </div>
-        <div class="buzou-item">
-          <span>邀请</span>
-          <span>好友参团</span>
-        </div>
-        <div class="buzou-item">
-          <span>达3人，拼团成功</span>
-          <span>逾期自动退款</span>
-        </div>
-      </div>
-    </div>-->
+
     <!--位置-->
     <div class="basic">
       <div class="basic-left">
@@ -73,35 +45,40 @@
     </div>
     <!--按钮-->
     <div class="btn">立即预约</div>
-    <!--<div class="button-group">
-      <div class="tuan" style="border-right: 1px solid #fff" @click="toPay">
-        <span>￥399.9</span>
-        <p>开团(3人团)</p>
-      </div>
-      <div class="tuan">
-        <span>￥599.9</span>
-        <p>单独预约</p>
-      </div>
-    </div>-->
+
   </div>
 </template>
 
 <script>
-  export default {
-    name: "productDetail",
-    data () {
-      return {
-
+import axios from 'axios'
+export default {
+  name: "productDetail",
+  data () {
+    return {
+      goods_id: '',
+      goods_images: '',
+      proInfo: {},
+      store_info: {}
+    }
+  },
+  mounted() {
+    this.goods_id = this.$route.query.goods_id
+    this.getDetail()
+  },
+  methods: {
+    getDetail () {
+      axios.get('/lan/goods_detail?goods_id=' +this.goods_id).then(this.getDetailSucc).catch(err => console.log(err))
+    },
+    getDetailSucc (res) {
+      // console.log(res.data.data)
+      if (res.data.code == 2000) {
+        this.goods_images = res.data.data.goods_images[0].image_url
+        this.proInfo = res.data.data.list
+        // this.store_info = res.data.data.store_info
       }
-    },
-    mounted() {
-    },
-    methods: {
-      /*toPay () {
-        this.$router.push('/assemble/assemblePay')
-      }*/
     }
   }
+}
 </script>
 
 <style scoped>

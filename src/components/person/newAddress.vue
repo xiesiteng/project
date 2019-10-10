@@ -4,7 +4,7 @@
         <div class="new-wrap">
           <div class="new-item">
             <span>收货人</span>
-            <input type="text" v-model="name" placeholder="请输入收货人姓名" >
+            <input type="text" v-model="name" placeholder="请输入收货人姓名" @blur="leave">
           </div>
           <div class="new-item">
             <span>手机号</span>
@@ -26,11 +26,11 @@
           <!--地区选择end-->
           <div class="new-item">
             <span>详细地址</span>
-            <input type="text" v-model="detailAddress" placeholder="请输入详细地址">
+            <input type="text" v-model="detailAddress" placeholder="请输入详细地址" @blur="leave">
           </div>
         </div>
         <!--确认-->
-        <div class="sure" @click="sureAdd">确认</div>
+        <div class="sure" v-show="hidshow" @click="sureAdd">确认</div>
       </div>
       <!--三级联动-->
       <van-popup v-model="showAddress" position="bottom" :style="{ height: '50%' }">
@@ -47,6 +47,7 @@
 <script>
 import { Toast } from 'vant';
 import addressList from "../../../area";
+import axios from 'axios'
 export default {
   name: "newAddress",
   data () {
@@ -54,15 +55,38 @@ export default {
       name: '',
       phone: '',
       detailAddress: '',
+      province: '',
+      city: '',
+      district: '',
       areaNum: "",
       areaList: addressList,
       userAddress: '',
       showAddress: false,
-      showpick: false
+      showpick: false,
+      hidshow:true,  //显示或者隐藏footer,
       }
   },
-  mounted () {},
+  mounted () {
+    // 监听页面高度的变化
+    const ua = window.navigator.userAgent;
+    if (ua.indexOf('Android') > -1 || ua.indexOf('iPhone') > -1) {
+      const docmHeight = document.body.clientHeight;// 默认屏幕高度
+      window.onresize = () => {
+        var nowHeight = document.body.clientHeight;// 实时屏幕高度
+        if (docmHeight !== nowHeight) {
+          this.hidshow = false;
+        } else {
+          this.hidshow = true;
+        }
+      };
+    }
+
+
+  },
   methods: {
+    leave() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    },
     judgePhone () {
       var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
       if (!myreg.test(this.phone)) {
@@ -75,6 +99,9 @@ export default {
     // 三级联动点击确定按钮事件
     sure(val) {
       console.log(val);
+      this.province = val[0].name
+      this.city = val[1].name
+      this.district = val[2].name
       this.userAddress = val[0].name + " "+val[1].name+" "+val[2].name
       console.log(this.userAddress)
       this.showAddress = false
@@ -104,6 +131,13 @@ export default {
       if (!this.detailAddress) {
         Toast('请输入详细地址')
         return false
+      }
+      axios.get('/lan/user_address_edit?consignee=' + this.name + '&mobile=' + this.phone + '&province=' + this.province + '&city=' + this.city + '&district=' + this.district + '&address=' + this.detailAddress).then(this.addSucc).catch(err => console.log(err))
+    },
+    addSucc (res) {
+      console.log(res.data)
+      if (res.data.code == 2000) {
+        this.$router.push('/person/mineAddress')
       }
     }
   }

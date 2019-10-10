@@ -32,6 +32,14 @@ const personal = [
     }
   },
   {
+    path: '/person/changeAddress',
+    name: 'changeAddress',
+    component: () => import('@/components/person/changeAddress'),
+    meta: {
+      title: '编辑地址'
+    }
+  },
+  {
     path: '/person/discount',
     name: 'discount',
     component: () => import('@/components/person/discount'),

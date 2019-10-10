@@ -18,7 +18,6 @@ Vue.config.productionTip = false
 axios.defaults.baseURL= 'http://ymm.molonglan.top'
 axios.defaults.headers.post['Content-Type'] = "application/json"
 // axios.defaults.withCredentials = true
-// axios.defaults.headers.common['Authorization'] = store.state.token
 axios.defaults.headers.common['YMM-TK'] = store.state.token
 // Vue.prototype.$axios = axios
 
@@ -37,7 +36,6 @@ axios.interceptors.request.use(config => {
 // 在发送请求之前做些什么
 //判断是否存在token，如果存在将每个页面header都添加token
   if(store.state.token){
-    // config.headers.common['Authorization'] = store.state.token
     config.headers.common['YMM-TK'] = store.state.token
   }
   return config;
@@ -52,15 +50,15 @@ axios.interceptors.request.use(config => {
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    console.log(response.data)
-    // if (response.status == 4001) {
-    //   console.log('---')
-    //   this.$store.commit('delToken');
-    //   router.replace({
-    //     path: '/login/login',
-    //     query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
-    //   })
-    // }
+    // console.log(response.data.code)
+    if (response.data.code == 4001) {
+      // this.$store.commit('delToken');
+      localStorage.removeItem("token")
+      router.replace({
+        path: '/login/login',
+        query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+      })
+    }
     return response;
   },
   error => {

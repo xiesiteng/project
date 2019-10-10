@@ -2,8 +2,8 @@
     <div>
         <div class="main" >
           <van-swipe :autoplay="3000" indicator-color="white">
-            <van-swipe-item v-for="(item, index) in imgList" :key="index">
-              <img :src="item.url" alt="" style="height: 200px; width: 100%">
+            <van-swipe-item v-for="(item, index) in bannerList" :key="index">
+              <img :src="item.ad_code" alt="" style="height: 200px; width: 100%">
             </van-swipe-item>
           </van-swipe>
           <!--advisement-->
@@ -22,7 +22,7 @@
           <div class="notice-wrap">
             <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
             <span class="notice-title">公告</span>
-            <p>【缦缦拼团】用户92569刚刚发起拼团</p>
+            <p>【缦缦拼团】公告内容</p>
           </div>
           <!--banner-->
           <div class="banner-wrap">
@@ -128,16 +128,17 @@
           </div>
 
           <div class="box-wrap">
-            <div class="box" v-for="(item, index) in 4" :key="index" @click="toIntegralDetail">
+            <div class="box" v-for="(item, index) in score_goods" :key="index" @click="toIntegralDetail">
               <!--多包一层div给border效果-->
               <div style="border: 1px solid #eee">
                 <div>
-                  <img src="../../../static/images/index/box.png" alt="" class="box-img">
+                  <!--<img src="../../../static/images/index/box.png" alt="" class="box-img">-->
+                  <img :src="item.original_img" alt="" class="box-img">
                 </div>
-                <p class="box-name">水养活肤</p>
+                <p class="box-name">{{item.goods_name}}</p>
                 <div class="integral">
                   <div class="dui">兑</div>
-                  <p>500积分</p>
+                  <p>{{item.exchange_integral}}积分</p>
                 </div>
               </div>
             </div>
@@ -154,17 +155,10 @@ export default {
     name: "index.vue",
   data () {
     return {
-      imgList: [
-        {
-          url: '../../../static/images/swiper.png'
-        },
-        {
-          url: '../../../static/images/swiper.png'
-        },
-        {
-          url: '../../../static/images/swiper.png'
-        }
-      ],
+      bannerList: [],
+      noticeList: [],
+      article_banner: [],
+      score_goods: [],
       adList: [
         {
           img: '../../../static/images/face.png',
@@ -191,14 +185,19 @@ export default {
     tabBar
   },
   mounted () {
-      this.init()
+    this.init()
   },
   methods: {
     init () {
-      axios.get('/lan/_index').then(this.initSucc).catch(err => console.log(err))
+      axios.get('/lan/_index?prom_type=1').then(this.initSucc).catch(err => console.log(err))
     },
     initSucc (res) {
-      console.log(res.data)
+      // console.log(res.data)
+      this.bannerList = res.data.banner
+      this.noticeList = res.data.notice
+      this.article_banner = res.data.article_banner
+      this.score_goods = res.data.score_goods
+      // console.log(this.noticeList)
     },
       choose (val) {
         if (val == 1) {
