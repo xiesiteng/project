@@ -6,16 +6,17 @@
       <!--商品信息-->
       <div class="goods-info">
         <div class="goods-price">
-          <p>￥<em>2999.00</em></p>
-          <img src="../../../static/images/index/no_colle.png" alt="">
+          <p>￥<em>{{info.shop_price}}</em></p>
+          <img src="../../../static/images/index/no_colle.png" alt="" v-show="is_collect == 0" @click="collect(info.goods_id)">
+          <img src="../../../static/images/index/colle.png" alt="" v-show="is_collect == 1" @click="collect(info.goods_id)">
         </div>
 
-        <p class="goods-name">亮片进口白纱礼服</p>
+        <p class="goods-name">{{info.goods_name}}</p>
 
         <div class="goods-basic">
           <span>运费：免运费</span>
-          <span>销量：2</span>
-          <span>库存：12</span>
+          <span>销量：{{info.store_count}}</span>
+          <span>库存：{{info.store_count}}</span>
         </div>
       </div>
       <!--公告-->
@@ -44,16 +45,37 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "detail",
   data () {
     return{
-
+      info: {},
+      is_collect: ''
     }
   },
+  mounted () {
+    this.getDetail()
+  },
   methods:{
+    getDetail () {
+      axios.get('/lan/goods_detail').then(this.getDetailSucc).catch(err => console.log(err))
+    },
+    getDetailSucc (res) {
+      // console.log(res.data.data)
+      this.info = res.data.data.list
+      this.is_collect = res.data.data.is_collect
+    },
     buyNow () {
       this.$router.push('/shop/submitOrder')
+    },
+    collect (goods_id) {
+      axios.get('/lan/collect_goods?goods_id=' + goods_id).then(this.collectSucc).catch(err => console.log(err))
+    },
+    collectSucc (res) {
+      if (res.data.code == 2000) {
+
+      }
     }
   }
 }
@@ -114,6 +136,7 @@ export default {
     padding: 15px 15px;
     background-color: #fff;
     display: flex;
+    padding-bottom: 50px;
   }
   .basic-left{
     width: 20%;

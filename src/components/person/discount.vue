@@ -1,7 +1,7 @@
 <template>
     <div>
       <div class="main">
-        <div class="discount" v-for="(item, index) in 3" :key="index">
+        <div class="discount" v-for="(item, index) in disList" :key="index">
           <img src="../../../static/images/index/disc.png" alt="" class="bg">
           <div class="dis-left">
             <span>￥ <b>{{item.money}}</b></span>
@@ -9,7 +9,7 @@
           </div>
           <div class="dis-right">
             <p>全场消费满{{item.condition}}可用</p>
-            <span>2019-09-01前有效</span>
+            <span>{{item.use_end_time}}前有效</span>
           </div>
         </div>
       </div>

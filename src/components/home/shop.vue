@@ -12,47 +12,50 @@
           />
           </form>
           <!--nav-->
-          <div class="nav-wrap" v-show="false">
+          <div class="nav-wrap" v-show="!flag">
             <ul class="nav">
               <li :class="active == 0 ? 'nav-active' : ''" @click="choose(0)">综合排序</li>
               <li :class="active == 1 ? 'nav-active' : ''" @click="choose(1)">销量
-                <img src="../../../static/images/index/sort.png" alt="">
-                <img src="../../../static/images/index/asc.png" alt="" v-show="false">
-                <img src="../../../static/images/index/desc.png" alt="" v-show="false">
+                <img src="../../../static/images/index/sort.png" alt="" v-show="countFlag">
+                <img src="../../../static/images/index/asc.png" alt="" v-show="!count_sort && !countFlag">
+                <img src="../../../static/images/index/desc.png" alt="" v-show="count_sort && !countFlag">
               </li>
               <li :class="active == 2 ? 'nav-active' : ''" @click="choose(2)">价格
-                <img src="../../../static/images/index/sort.png" alt="">
-                <img src="../../../static/images/index/asc.png" alt="" v-show="false">
-                <img src="../../../static/images/index/desc.png" alt="" v-show="false">
+                <img src="../../../static/images/index/sort.png" alt="" v-show="priceFlag">
+                <img src="../../../static/images/index/asc.png" alt="" v-show="!price_sort && !priceFlag">
+                <img src="../../../static/images/index/desc.png" alt="" v-show="price_sort && !priceFlag">
               </li>
             </ul>
           </div>
           <!--nav-->
           <!--搜索结果-->
-          <div class="search-res" v-show="false">
-            <p>搜索到1个结果</p>
+          <div class="search-res" v-show="flag">
+            <p>搜索到{{count}}个结果</p>
           </div>
           <!--搜索结果-->
           <!--商品信息start-->
-          <van-list
+          <!--<van-list
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
-          >
-            <div class="box-wrap">
-              <div class="box" v-for="(item, index) in list" :key="index" @click="toDetail">
-                <!--多套一层div给border-->
-                <div class="box-border">
-                  <div>
-                    <img src="../../../static/images/index/gznf.png" alt="" class="box-img">
+          >-->
+          <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+              <div class="box-wrap">
+                <div class="box" v-for="(item, index) in list" :key="index" @click="toDetail(item.goods_id)">
+                  <!--多套一层div给border-->
+                  <div class="box-border">
+                    <div>
+                      <!--<img src="../../../static/images/index/gznf.png" alt="" class="box-img">-->
+                      <img :src="item.original_img" alt="" class="box-img">
+                    </div>
+                    <p class="name">{{item.goods_name}}</p>
+                    <div class="money">￥{{item.shop_price}}</div>
                   </div>
-                  <p class="name">{{item.name}}</p>
-                  <div class="money">￥{{item.price}}</div>
                 </div>
               </div>
-            </div>
-          </van-list>
+            </scroll>
+          <!--</van-list>-->
           <!--商品信息end-->
         </div>
 
@@ -67,6 +70,7 @@
             show-action
             @search="onSearch"
             @cancel="onCancel"
+            @clear="onClear"
           />
           </form>
           <!--<div class="search-wrap">
@@ -80,12 +84,12 @@
               <img src="../../../static/images/index/orderTime.png" alt="">
               <span>最近搜索</span>
             </div>
-            <img src="../../../static/images/index/delete.png" alt="">
+            <img src="../../../static/images/index/delete.png" alt="" @click="deleteKeywords">
           </div>
           <!--最近搜索标签-->
           <div class="tag-wrap">
             <ul class="tag">
-              <li v-for="(item, index) in 6" :key="index" class="tag-item">婚纱裙</li>
+              <li v-for="(item, index) in tagList" :key="index" class="tag-item" @click="pickKeywords(item.keywords)">{{item.keywords}}</li>
             </ul>
           </div>
         </div>
@@ -96,26 +100,38 @@
 
 <script>
 import { Toast } from 'vant'
+import axios from 'axios'
+import scroll from '../common/scroll'
 export default {
     name: "shop.vue",
     data () {
       return {
+        enableLoadMore: true,
         value: '',
         active: 0,
         noFocus: true,
         onFocus: false,
         loading: false,
         finished: false,
-        list: [
-          {name: '美白再生因子深沉抗皱', price: '599.00'},
-          {name: '美白再生因子深沉抗皱', price: '599.00'},
-          {name: '美白再生因子深沉抗皱', price: '599.00'},
-          {name: '美白再生因子深沉抗皱', price: '599.00'},
-          {name: '美白再生因子深沉抗皱', price: '599.00'},
-          {name: '美白再生因子深沉抗皱', price: '599.00'}
-        ]
+        list: [],
+        order_by: 'all', // all: 综合, sales_num: 销量, shop_price: 价格
+        is_order: '0',
+        order_by_val: '0',
+        page: 1,
+        cat_id: '898',
+        count_sort: false,
+        countFlag: true,
+        priceFlag: true,
+        price_sort: false,
+        tagList: [],
+        flag: false,
+        count: '',
+        clear_flag: false // 从第一个搜索框到第二个搜索框变true控制搜索时把list清空，搜索完变为false防止下拉时再次被清空
       }
     },
+  components: {
+      scroll
+  },
   watch: {
 
   },
@@ -130,19 +146,74 @@ export default {
     }
   },
   mounted() {
-      // console.log(this.$refs)
+      this.getGoods()
+      // this.getKeywords()
   },
   methods: {
-    onSearch () {
-      Toast('搜索')
-      },
-    /*search (event) {
-      if (event.keyCode == 13) { //如果按的是enter键 13是enter
-        event.preventDefault(); //禁止默认事件（默认是换行）
-        console.log(event.target.value)
-        Toast("点击了确认")
+    getGoods () {
+      axios.get('/lan/goods_list?order_by=' + this.order_by  + '&page='+ this.page + '&cat_id=' + this.cat_id + '&order_by_val=' + this.order_by_val).then(this.getGoodsSucc).catch(err => console.log(err))
+    },
+    getGoodsSucc (res) {
+      // console.log(res.data.data.list)
+      if (res.data.data.list.length == 0) {
+        this.enableLoadMore = false
       }
-    },*/
+      this.list = this.list.concat(res.data.data.list)
+    },
+    getKeywords () {
+      axios.get('/lan/goods_list?key_words=' + this.value + '&page=' + this.page + '&cat_id=' +this.cat_id).then(this.getKeywordsSucc).catch(err => console.log(err))
+    },
+    getKeywordsSucc (res) {
+      // this.tagList.push(res.data.data.goods_search.keywords)
+      this.tagList = res.data.data.goods_search
+      // for(let i=0; i<res.data.data.goods_search.length; i++) {
+      //   this.tagList.push(res.data.data.goods_search[i].keywords)
+      // }
+      if (this.tagList.length > 4) {
+        this.tagList.pop()
+      }
+    },
+    deleteKeywords () {
+      axios.get('/lan/goods_clear_search').then(this.deleteSucc).catch(err => console.log(err))
+    },
+    deleteSucc (res) {
+      if (res.data.code == 2000) {
+        this.tagList = []
+      }
+    },
+    onSearch () {
+      // Toast('搜索')
+        axios.get('/lan/goods_list?key_words=' + this.value + '&page=' + this.page + '&cat_id=' +this.cat_id).then(this.searchSucc).catch(err => console.log(err))
+      },
+    searchSucc (res) {
+      console.log(res.data.data)
+      if (res.data.code == 2000) {
+        this.enableLoadMore = true
+        if (res.data.data.list.length == 0) {
+          this.enableLoadMore = false
+          // return false
+        }
+        if (this.clear_flag) {
+          this.list = []
+        }
+
+        this.list = this.list.concat(res.data.data.list)
+        this.count = res.data.data.count
+        if (this.value !== '') {
+          this.flag = true
+        } else {
+          this.flag = false
+        // 重置图标
+          this.active = 0
+          this.count_sort = false
+          this.countFlag = true
+          this.priceFlag = true
+          this.price_sort = false
+        }
+        this.onCancel()
+        this.clear_flag = false
+      }
+    },
     changfouce(){
       this.$nextTick((x)=>{
         /*this.$refs.inputs.focus();*/
@@ -152,6 +223,59 @@ export default {
     },
     choose (val) {
       this.active = val
+      switch (val) {
+        case 0:
+          this.page = 1
+          this.list = []
+          this.enableLoadMore = true
+          this.countFlag = true
+          this.count_sort = false
+          this.priceFlag = true
+          this.price_sort = false
+          this.order_by = 'all'
+          this.order_by_val = '0'
+          //获取数据
+          this.getGoods()
+          break
+        case 1:
+          this.page = 1
+          this.list = []
+          this.enableLoadMore = true
+          this.priceFlag = true
+          this.price_sort = false
+          this.countFlag = false
+          this.count_sort = !this.count_sort
+          // 1为销量排序
+          this.order_by = 'sales_num'
+          // count_sort为true则为降序0，为false则为升序1
+          if (this.count_sort) {
+            this.order_by_val = '0'
+          } else {
+            this.order_by_val = '1'
+          }
+          //获取数据
+          this.getGoods()
+          break
+        case 2:
+          this.page = 1
+          this.list = []
+          this.enableLoadMore = true
+          this.countFlag = true
+          this.count_sort = false
+          this.priceFlag = false
+          this.price_sort = !this.price_sort
+          // 2为价格排序
+          this.order_by = 'shop_price'
+          // price_sort为true则为降序0，为false则为升序1
+          if (this.price_sort) {
+            this.order_by_val = '0'
+          } else {
+            this.order_by_val = '1'
+          }
+          //获取数据
+          this.getGoods()
+          break
+      }
     },
     // showNo () {
     //   this.noFocus = true
@@ -161,34 +285,43 @@ export default {
       this.onFocus = true
       this.noFocus = false
       this.changfouce()
+      // 弹出搜索层的时候重置page为1
+      this.page = 1
+      this.getKeywords()
+      this.clear_flag = true
     },
     onCancel () {
+      // console.log(this.value)
       this.noFocus = true
       this.onFocus = false
     },
-    toDetail () {
-      this.$router.push('/shop/detail')
+    onClear () {
+      this.value = ''
+    },
+    toDetail (goods_id) {
+      this.$router.push({path: '/shop/detail', query: {goods_id: goods_id}})
     },
     getItem () {
       let obj = {name: '美白再生因子深沉抗皱++', price: '399.99'}
       this.list.push(obj)
     },
-    onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        // for (let i = 0; i < this.list.length; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-        this.loading = true
-        this.getItem()
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 20) {
-          this.finished = true;
+    onLoadMore(done) {
+      setTimeout(()=>{
+        if(!this.enableLoadMore) {
+          return
         }
-      }, 500);
+        this.page++
+        if (this.value == '') {
+          this.getGoods();
+        } else {
+          this.onSearch()
+        }
+        done();
+      }, 200)
+    },
+    pickKeywords (keywords) {
+      this.value = keywords
+      this.onSearch()
     }
   }
 }

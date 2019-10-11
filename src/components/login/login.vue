@@ -19,7 +19,7 @@
               <input type="password" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave">
             </div>
 
-            <button class="forget">忘记密码>></button>
+            <button class="forget" @click="toForget">忘记密码>></button>
           </div>
           <!--箭头-->
           <div class="login" @click="Login">
@@ -49,6 +49,9 @@ export default {
     },
     toRigster () {
       this.$router.push('/rigster/rigster')
+    },
+    toForget () {
+      this.$router.push('/login/forget')
     },
     Login () {
 

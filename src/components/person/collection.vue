@@ -1,29 +1,30 @@
 <template>
     <div class="main">
-      <div class="coll-wrap" v-show="false">
+      <div class="coll-wrap" v-show="noCollect">
         <div class="coll-img">
           <img src="../../../static/images/index/nocol.png" alt="">
         </div>
         <p class="hasNo">这里什么也没有</p>
       </div>
 
-      <div class="time_ass">
+      <div class="time_ass" v-show="!noCollect">
 
         <!--拼团start-->
-        <div class="ass-item" v-for="(item, index) in 3" :key="index">
+        <div class="ass-item" v-for="(item, index) in collect_list" :key="index">
           <div class="item-left">
-            <img src="../../../static/images/index/gznf.png" alt="" class="item-img">
+            <!--<img src="../../../static/images/index/gznf.png" alt="" class="item-img">-->
+            <img :src="item.original_img" alt="" class="item-img">
           </div>
           <div class="item-right">
-            <p class="title">光子嫩肤</p>
+            <p class="title">{{item.goods_name}}</p>
             <div class="tag-wrap">
-              <p>剩余名额29个</p>
+              <p>剩余名额{{item.store_count}}个</p>
             </div>
             <!--价格和拼团按钮-->
             <div class="price-wrap">
               <div class="include">
                 <em>￥</em>
-                <p class="price">500.9</p>
+                <p class="price">{{item.shop_price}}</p>
               </div>
               <img src="../../../static/images/index/coll_shop.png" alt="">
             </div>
@@ -35,8 +36,30 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-    name: "collection"
+  name: "collection",
+  data () {
+    return{
+      noCollect: false,
+      collect_list: []
+    }
+  },
+  mounted () {
+    this.getCollection()
+  },
+  methods: {
+    getCollection () {
+      axios.get('/lan/collect_list').then(this.getCollectionSucc).catch(err => console.log(err))
+    },
+    getCollectionSucc (res) {
+      // console.log(res.data)
+      this.collect_list = res.data.data.result
+      if (this.collect_list.length == 0) {
+        this.noCollect = true
+      }
+    }
+  }
 }
 </script>
 
@@ -93,23 +116,7 @@ export default {
     font-size: 13px;
     color: #999;
   }
-  /*.tag-wrap span:nth-child(1){*/
-  /*  background-color: #FF9C99;*/
-  /*  font-size: 10px;*/
-  /*  color: #fff;*/
-  /*  padding: 2px 15px;*/
-  /*  box-sizing: border-box;*/
-  /*  border-radius: 5px;*/
-  /*  margin-right: 25px;*/
-  /*}*/
-  /*.tag-wrap span:nth-child(2){*/
-  /*  background-color: #8AD7D6;*/
-  /*  font-size: 10px;*/
-  /*  color: #fff;*/
-  /*  padding: 2px 15px;*/
-  /*  box-sizing: border-box;*/
-  /*  border-radius: 5px;*/
-  /*}*/
+
   .price-wrap{
     display: flex;
     align-items: center;

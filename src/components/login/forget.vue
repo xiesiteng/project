@@ -10,22 +10,22 @@
       <div class="form-info">
         <div class="user">
           <img src="../../../static/images/index/phone.png" alt="">
-          <input type="text" placeholder="输入手机号" maxlength="11" class="userInput">
+          <input type="tel" placeholder="输入手机号" maxlength="11" class="userInput" v-model="phone" @blur="leave">
         </div>
 
         <div class="password">
           <img src="../../../static/images/index/safe.png" alt="">
-          <input type="text" placeholder="输入验证码" class="safeInput">
+          <input type="text" placeholder="输入验证码" class="safeInput" v-model="code" @blur="leave">
           <button class="safe">发送验证码</button>
         </div>
 
         <div class="password">
           <img src="../../../static/images/index/password.png" alt="">
-          <input type="text" placeholder="设置新密码" class="userInput">
+          <input type="password" placeholder="设置新密码" class="userInput" v-model="password" @blur="leave">
         </div>
       </div>
       <!--箭头-->
-      <div class="login">
+      <div class="login" @click="verfity">
         <img src="../../../static/images/index/arrow.png" alt="">
       </div>
     </div>
@@ -33,20 +33,48 @@
 </template>
 
 <script>
-  export default {
-    name: "rigster",
-    data () {
-      return {
+import axios from 'axios'
+import {Toast} from 'vant'
+export default {
+  name: "rigster",
+  data () {
+    return {
+      code: '',
+      phone: '',
+      password: ''
+    }
+  },
+  mounted() {
 
+  },
+  methods: {
+    leave() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    },
+    verfity () {
+      if (!this.phone) {
+        Toast('手机号不能为空')
+        return false
       }
+      if (!this.code) {
+        Toast('验证码不能为空')
+        return false
+      }
+      if (!this.password) {
+        Toast('密码不能为空')
+        return false
+      }
+      axios.get('/lan/forget_password?mobile=' + this.phone + '&code=' + this.code + '&password=' + this.password).then(this.verfitySucc).catch(err => console.log(err))
     },
-    mounted() {
-
-    },
-    methods: {
-
+    verfitySucc (res) {
+      if (res.data.code == 2000) {
+        this.$router.push('/login/success')
+      } else {
+        Toast(res.data.msg)
+      }
     }
   }
+}
 </script>
 
 <style scoped>
