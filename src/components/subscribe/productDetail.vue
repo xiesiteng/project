@@ -2,7 +2,12 @@
   <div class="main">
     <div>
       <!--<img src="../../../static/images/index/box.png" alt="" class="imgSize">-->
-      <img :src="goods_images" alt="" class="imgSize">
+      <!--<img :src="goods_images" alt="" class="imgSize">-->
+      <van-swipe  indicator-color="white">
+        <van-swipe-item v-for="(item, index) in goods_images" :key="index">
+          <img :src="item.image_url" alt="" class="imgSize">
+        </van-swipe-item>
+      </van-swipe>
     </div>
     <!--信息-->
     <div class="pro">
@@ -72,7 +77,7 @@ export default {
     getDetailSucc (res) {
       // console.log(res.data.data)
       if (res.data.code == 2000) {
-        this.goods_images = res.data.data.goods_images[0].image_url
+        this.goods_images = res.data.data.goods_images
         this.proInfo = res.data.data.list
         // this.store_info = res.data.data.store_info
       }

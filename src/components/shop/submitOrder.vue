@@ -5,10 +5,10 @@
           <img src="../../../static/images/index/coordinates.png" alt="">
           <div class="user-wrap">
             <div class="user">
-              <p>收货人: 谢思腾</p>
-              <span>18283350462</span>
+              <p>收货人: {{recInfo.consignee}}</p>
+              <span>{{recInfo.mobile}}</span>
             </div>
-            <div>四川省成都市武侯区晋阳新居</div>
+            <div>{{recInfo.province}}{{recInfo.city}}{{recInfo.district}}{{recInfo.address}}</div>
           </div>
         </div>
         <img src="../../../static/images/index/more_small.png" alt="">
@@ -18,11 +18,12 @@
       <!--商品-->
       <div class="goods-wrap">
         <div class="goods-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="size">
+          <!--<img src="../../../static/images/index/gznf.png" alt="" class="size">-->
+          <img :src="cart_selected.original_img" alt="" class="size">
         </div>
         <div class="goods-right">
-          <p>光子嫩肤</p>
-          <span>￥ <em>399</em></span>
+          <p>{{cart_selected.goods_name}}</p>
+          <span>￥ <em>{{cart_selected.goods_price}}</em></span>
         </div>
       </div>
       <div class="space"></div>
@@ -30,7 +31,7 @@
       <div class="discount-wrap" @click="chooseDiscount">
         <div class="discount">
           <span>优惠券</span>
-          <p class="none">
+          <p class="none" v-show="noDis">
             暂无优惠券
             <img src="../../../static/images/index/more_small.png" alt="" class="arrow">
           </p>
@@ -38,7 +39,7 @@
       </div>
       <!--订单信息-->
       <div class="wrap-content">
-        <div class="user-info">
+        <!--<div class="user-info">
           <p class="title">订单信息</p>
           <div class="order-info">
             <span class="person">订单号码:</span>
@@ -52,7 +53,7 @@
             <span class="person">支付方式:</span>
             <p>微信</p>
           </div>
-        </div>
+        </div>-->
 
         <div class="basic-info">
 
@@ -118,15 +119,15 @@
       >
 
         <div class="popUp">
-          <div class="pop-wrap" v-for="(item, index) in 4" :key="index" @click="pickAddress">
+          <div class="pop-wrap" v-for="(item, index) in addressList" :key="index" @click="pickAddress(item)">
             <div class="wrap">
               <img src="../../../static/images/index/coordinates.png" alt="">
               <div class="user-wrap">
                 <div class="user">
-                  <p>收货人: 谢思腾</p>
-                  <span>18283350462</span>
+                  <p>收货人: {{item.consignee}}</p>
+                  <span>{{item.mobile}}</span>
                 </div>
-                <div>四川省成都市武侯区晋阳新居</div>
+                <div>{{item.province}}{{item.city}}{{item.district}}{{item.address}}</div>
               </div>
             </div>
             <!--<img src="../../../static/images/index/more_small.png" alt="">-->
@@ -138,17 +139,61 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "submitOrder",
   data () {
     return{
       showDis: false,
       showAdd: false,
-      checked: false
+      checked: false,
+      addressList: [],
+      recInfo: {},
+      goods_id: '',
+      cart_selected: {},
+      total_price: {},
+      noDis: false
     }
   },
+  mounted () {
+    this.goods_id = this.$route.query.goods_id
+    this.getAddress()
+    this.getDis()
+    this.getInfo()
+  },
   methods: {
+    getDis () {
+      axios.get('/lan/coupon_list').then(this.getDisSucc).catch(err => console.log(err))
+    },
+    getDisSucc (res) {
+      if (res.data.code == 2000) {
+        if (res.data.data.result.length == 0) {
+          this.noDis = true
+        }
+      }
+    },
+    getAddress () {
+      axios.get('/lan/user_address').then(this.getAddressSucc).catch(err => console.log(err))
+    },
+    getAddressSucc (res) {
+      // console.log(res.data.data)
+      this.addressList = res.data.data.result
+      this.recInfo = this.addressList[0]
+    },
+    getInfo () {
+      axios.get('/lan/settlement_cart?goods_id=' + this.goods_id).then(this.getInfoSucc).catch(err => console.log(err))
+    },
+    getInfoSucc (res) {
+      // console.log(res.data.data)
+      if (res.data.code == 2000) {
+        this.cart_selected = res.data.data.cart_selected
+        this.total_price = res.data.data.total_price
+      }
+    },
     chooseDiscount () {
+      // if (this.noDis) {
+      //   return false
+      // }
       this.showDis = true
     },
     chooseAddress () {
@@ -157,7 +202,9 @@ export default {
     pickItem () {
       this.showDis = false
     },
-    pickAddress () {
+    pickAddress (item) {
+      this.recInfo = item
+      // console.log(this.recInfo)
       this.showAdd = false
     },
     select () {

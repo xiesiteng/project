@@ -1,7 +1,12 @@
 <template>
     <div>
       <div>
-        <img src="../../../static/images/index/box.png" alt="" class="imgSize">
+        <!--<img src="../../../static/images/index/box.png" alt="" class="imgSize">-->
+        <van-swipe  indicator-color="white">
+          <van-swipe-item v-for="(item, index) in goods_images" :key="index">
+            <img :src="item.image_url" alt="" class="imgSize">
+          </van-swipe-item>
+        </van-swipe>
       </div>
       <!--商品信息-->
       <div class="goods-info">
@@ -14,8 +19,8 @@
         <p class="goods-name">{{info.goods_name}}</p>
 
         <div class="goods-basic">
-          <span>运费：免运费</span>
-          <span>销量：{{info.store_count}}</span>
+          <span>运费：{{info.postage}}</span>
+          <span>销量：{{info.sales_sum}}</span>
           <span>库存：{{info.store_count}}</span>
         </div>
       </div>
@@ -39,7 +44,7 @@
       <!--按钮-->
       <div class="button-group">
         <button>加入购物车</button>
-        <button @click="buyNow">立即购买</button>
+        <button @click="buyNow(info.goods_id)">立即购买</button>
       </div>
     </div>
 </template>
@@ -50,31 +55,35 @@ export default {
   name: "detail",
   data () {
     return{
+      goods_images: [],
       info: {},
-      is_collect: ''
+      is_collect: '',
+      goods_id: ''
     }
   },
   mounted () {
+    this.goods_id = this.$route.query.goods_id
     this.getDetail()
   },
   methods:{
     getDetail () {
-      axios.get('/lan/goods_detail').then(this.getDetailSucc).catch(err => console.log(err))
+      axios.get('/lan/goods_detail?goods_id=' + this.goods_id).then(this.getDetailSucc).catch(err => console.log(err))
     },
     getDetailSucc (res) {
       // console.log(res.data.data)
       this.info = res.data.data.list
       this.is_collect = res.data.data.is_collect
+      this.goods_images = res.data.data.goods_images
     },
-    buyNow () {
-      this.$router.push('/shop/submitOrder')
+    buyNow (goods_id) {
+      this.$router.push({path: '/shop/submitOrder', query: {goods_id: goods_id}})
     },
     collect (goods_id) {
       axios.get('/lan/collect_goods?goods_id=' + goods_id).then(this.collectSucc).catch(err => console.log(err))
     },
     collectSucc (res) {
       if (res.data.code == 2000) {
-
+        this.getDetail()
       }
     }
   }

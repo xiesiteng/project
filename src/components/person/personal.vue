@@ -11,7 +11,7 @@
             </div>
           </div>
           <!--昵称-->
-          <div class="person-item" @click="tochangeName">
+          <div class="person-item" @click="tochangeName(info.nickname)">
             <span>昵称</span>
             <div class="right-center">
               <span>{{info.nickname}}</span>
@@ -55,8 +55,8 @@ export default {
      toAddress () {
        this.$router.push('/person/mineAddress')
      },
-     tochangeName () {
-       this.$router.push('/person/changeName')
+     tochangeName (nickname) {
+       this.$router.push({path: '/person/changeName', query: {nickname: nickname}})
      },
      getInfo () {
        axios.get('/lan/user_show').then(this.getInfoSucc).catch(err => console.log(err))
