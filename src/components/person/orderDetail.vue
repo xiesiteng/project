@@ -1,26 +1,29 @@
 <template>
     <div>
       <div class="head">
-        <p class="tit">待收货</p>
-        <p>卖家已发货，请准备收货</p>
-      </div>
-      <!--商品信息-->
-      <div class="pro">
+        <p class="tit">{{info.order_status_name}}</p>
+        <!--<p>卖家已发货，请准备收货</p>-->
         <!--物流start-->
         <div class="logistics">
           <div>
-            <p>物流信息： 顺丰快递  2548974512648</p>
-            <span class="time">2019-03-07 11:25:54</span>
+            <p>物流信息： {{info.shipping_name}}  {{info.shipping_code}}</p>
+            <span class="time">{{info.add_time}}</span>
           </div>
           <img src="../../../static/images/index/more_small.png" alt="">
         </div>
         <!--物流end-->
-        <div class="pro-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="size">
-        </div>
-        <div class="pro-right">
-          <p>光子嫩肤</p>
-          <span>¥ <em>399</em></span>
+      </div>
+      <!--商品信息-->
+      <div class="pro-wrap">
+        <div class="pro" v-for="(item, index) in order_goods" :key="index">
+          <div class="pro-left">
+            <img :src="item.original_img" alt="" class="size">
+            <!--<img src="../../../static/images/index/gznf.png" alt="" class="size">-->
+          </div>
+          <div class="pro-right">
+            <p>{{item.goods_name}}</p>
+            <span>¥ <em>{{item.goods_price}}</em></span>
+          </div>
         </div>
       </div>
 
@@ -31,15 +34,15 @@
           <p class="title">收货地址</p>
           <div class="user-name">
             <span class="person">收件人:</span>
-            <p>何大米</p>
+            <p>{{info.consignee}}</p>
           </div>
           <div class="user-name">
             <span class="person">电话号码:</span>
-            <p>18283350462</p>
+            <p>{{info.mobile}}</p>
           </div>
           <div class="user-name">
             <span class="person">收货地址:</span>
-            <p>四川省成都市武侯区晋阳新居</p>
+            <p>{{info.province}}{{info.city}}{{info.district}}{{info.address}}</p>
           </div>
         </div>
 
@@ -47,15 +50,15 @@
           <p class="title">订单信息</p>
           <div class="order-info">
             <span class="person">订单号码:</span>
-            <p>201910060934</p>
+            <p>{{info.order_sn}}</p>
           </div>
           <div class="order-info">
             <span class="person">下单时间:</span>
-            <p>2019-10-6 09:34</p>
+            <p>{{info.add_time}}</p>
           </div>
           <div class="order-info">
             <span class="person">支付方式:</span>
-            <p>微信</p>
+            <p>{{info.pay_name}}</p>
           </div>
         </div>
 
@@ -63,19 +66,19 @@
 
             <div class="order-info">
               <span class="person">商品金额:</span>
-              <p>￥399</p>
+              <p>￥{{info.total_amount}}</p>
             </div>
             <div class="order-info">
               <span class="person">运费:</span>
-              <p>+￥0.00</p>
+              <p>+￥{{info.total_postage}}</p>
             </div>
             <div class="order-info">
               <span class="person">优惠券抵扣:</span>
-              <p>-￥20.00</p>
+              <p>-￥{{info.coupon_price}}</p>
             </div>
             <div class="order-info">
               <span class="person">实付金额:</span>
-              <p style="color: red">￥379.00</p>
+              <p style="color: red">￥{{info.order_amount}}</p>
             </div>
 
         </div>
@@ -89,8 +92,30 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: "orderDetail"
+  name: "orderDetail",
+  data () {
+    return{
+      order_id: '',
+      info: {},
+      order_goods: []
+    }
+  },
+  mounted() {
+    this.order_id = this.$route.query.order_id
+    this.init()
+  },
+  methods: {
+    init () {
+      axios.get('/lan/order_details?order_id=' + this.order_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      // console.log(res.data.data)
+      this.info = res.data.data
+      this.order_goods = res.data.data.order_goods
+    }
+  }
 }
 </script>
 
@@ -110,17 +135,22 @@ export default {
     color: #fff;
     box-sizing: border-box;
     padding: 23px 15px;
+    position: relative;
   }
   .tit{
     padding-bottom: 10px;
     font-size: 24px;
   }
+  .pro-wrap{
+    box-sizing: border-box;
+    padding-top: 70px;
+  }
   .pro{
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    padding: 72px 15px 22px 15px;
-    position: relative;
+    padding: 10px 15px;
+    /*position: relative;*/
   }
   .pro-left{
     width: 30%;
@@ -153,8 +183,12 @@ export default {
     box-shadow: 4px 4px 8px #bbb;
     box-sizing: border-box;
     padding: 0 15px;
-    top: -20px;
+    top: 90px;
     left: 5%;
+  }
+  .logistics p{
+    color: #333;
+    padding-bottom: 5px;
   }
   .time{
     color: #848484;
@@ -224,4 +258,5 @@ export default {
     border: 1px solid #15B0AE;
     margin-left: 10px;
   }
+
 </style>

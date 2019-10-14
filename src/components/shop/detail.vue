@@ -43,7 +43,7 @@
       </div>
       <!--按钮-->
       <div class="button-group">
-        <button>加入购物车</button>
+        <button @click="addtoCar">加入购物车</button>
         <button @click="buyNow(info.goods_id)">立即购买</button>
       </div>
     </div>
@@ -51,6 +51,7 @@
 
 <script>
 import axios from 'axios'
+import {Toast} from 'vant'
 export default {
   name: "detail",
   data () {
@@ -84,6 +85,16 @@ export default {
     collectSucc (res) {
       if (res.data.code == 2000) {
         this.getDetail()
+      }
+    },
+    addtoCar () {
+      axios.get('/lan/add_cart?goods_id=' + this.goods_id).then(this.addtoCarSucc).catch(err => console.log(err))
+    },
+    addtoCarSucc (res) {
+      if (res.data.code == 2000) {
+        Toast(res.data.data.msg)
+      } else {
+        Toast(res.data.data.msg)
       }
     }
   }

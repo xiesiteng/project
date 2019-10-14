@@ -1,7 +1,7 @@
 <template>
     <div class="main">
       <!--无商品-->
-      <div class="wrap" v-show="false">
+      <div class="wrap" v-show="noProduct">
         <div class="hasNo">
           <img src="../../../static/images/index/car.png" alt="">
         </div>
@@ -9,25 +9,25 @@
       </div>
       <!--无商品-->
       <!--有商品-->
-      <div v-for="(item, index) in list" :key="index">
+      <div v-for="(item, index) in cartList" :key="index" v-show="!noProduct">
         <van-swipe-cell >
 
           <template slot="default">
             <div class="pro-wrap" v-show="true">
               <div class="pro-left">
                 <!--<div class="box" v-show="!item.flag" @click="pick(index)"></div>-->
-                <img src="../../../static/images/index/no_sel.png" alt="" v-show="!item.flag" @click="pick(index)">
-                <img src="../../../static/images/index/sel.png" alt="" v-show="item.flag" @click="pick(index)">
+                <img src="../../../static/images/index/no_sel.png" alt="" v-show="item.selected == 0" @click="pick(index, item.id, item.selected)">
+                <img src="../../../static/images/index/sel.png" alt="" v-show="item.selected == 1" @click="pick(index, item.id, item.selected)">
               </div>
               <div class="pro-right">
                 <img src="../../../static/images/index/gznf.png" alt="" class="size">
                 <div class="right-content">
-                  <p>光子嫩肤</p>
-                  <span>￥{{item.price}}</span>
+                  <p>{{item.goods_name}}</p>
+                  <span>￥{{item.goods_price}}</span>
                   <div class="button-group">
-                    <button class="but" @click="reduce(index)">-</button>
-                    <span>{{item.num}}</span>
-                    <button class="but" @click="add(index)">+</button>
+                    <button class="but" @click="reduce(item.id, item.goods_num)">-</button>
+                    <span>{{item.goods_num}}</span>
+                    <button class="but" @click="add(item.id, item.goods_num)">+</button>
                   </div>
                 </div>
               </div>
@@ -35,13 +35,13 @@
           </template>
 
           <template slot="right">
-            <van-button square type="danger" text="删除" class="del" @click="deleteItem(index)"/>
+            <van-button square type="danger" text="删除" class="del" @click="deleteItem(item.id)"/>
           </template>
         </van-swipe-cell>
       </div>
       <!--有商品-->
       <!--底部结算-->
-      <div class="balance">
+      <div class="balance" v-show="!noProduct">
         <div class="total">
           <div class="all">
             <!--<div class="box" v-show="!selAll" @click="pickAll"></div>-->
@@ -49,7 +49,7 @@
             <img src="../../../static/images/index/sel.png" alt="" v-show="selAll" @click="pickAll">
             <p>全选</p>
           </div>
-          <p>合计：<span>￥1200</span></p>
+          <p>合计：<span>￥{{total_price.total_fee}}</span></p>
         </div>
         <button class="toPay">结算</button>
       </div>
@@ -58,6 +58,7 @@
 
 <script>
 import { Toast } from 'vant';
+import axios from 'axios'
 export default {
     name: "shopCar",
   data () {
@@ -68,16 +69,19 @@ export default {
         {flag: false, num: 1, price: 400},
         {flag: false, num: 1, price: 500},
         {flag: false, num: 1, price: 600}
-      ]
+      ],
+      noProduct: false,
+      cartList: [],
+      total_price: {}
     }
   },
   watch: {
-    list: {
+    cartList: {
       handler (value) {
         let _this = this
         let count = 0
         for (let i = 0; i < value.length; i++) {
-          if (value[i].flag === true) {
+          if (value[i].selected == 1) {
             count++
           }
         }
@@ -91,37 +95,94 @@ export default {
     }
   },
   mounted() {
+      this.init()
   },
   methods: {
-    pick (index) {
-      this.list[index].flag = !this.list[index].flag
+    init () {
+      axios.get('/lan/cart_lists').then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      // console.log(res.data.data)
+      if (res.data.code == 2000) {
+        if (res.data.data.cartList.length == 0) {
+          this.noProduct = true
+        } else {
+          this.cartList = res.data.data.cartList
+          this.total_price = res.data.data.total_price
+        }
+      }
+    },
+    pick (index, id, selected) {
+      if (selected == 0) {
+        selected = 1
+      } else {
+        selected = 0
+      }
+      axios.get('/lan/edit_cart?id=' + id + '&cart_select=' + selected).then(this.pickSucc).catch(err => console.log(err))
+      // this.cartList[index].selected = !this.cartList[index].selected
+      // if (this.cartList[index].selected == 0) {
+      //   this.cartList[index].selected = 1
+      // } else {
+      //   this.cartList[index].selected = 0
+      // }
+    },
+    pickSucc (res) {
+      this.cartList = res.data.data.cartList
+      this.total_price = res.data.data.total_price
     },
     pickAll () {
       // +++
       this.selAll = !this.selAll
       let _this = this
       if (!this.selAll) {
-        _this.list.forEach(function (item) {
-          item.flag = false
+        _this.cartList.forEach(function (item) {
+          item.selected = false
         })
       } else if (this.selAll) {
-        _this.list.forEach(function (item) {
-          item.flag = true
+        _this.cartList.forEach(function (item) {
+          item.selected = true
         })
       }
+      if (this.selAll) {
+        axios.get('/lan/edit_cart?cart_select=all').then(this.pickAllSucc).catch(err => console.log(err))
+      } else {
+        axios.get('/lan/edit_cart?cart_select=cancel').then(this.pickAllSucc).catch(err => console.log(err))
+      }
+
       },
-    add (index) {
-      this.list[index].num++
+    pickAllSucc (res) {
+      this.cartList = res.data.data.cartList
+      this.total_price = res.data.data.total_price
     },
-    reduce (index) {
-      if (this.list[index].num <= 1) {
+    add (id, goods_num) {
+      goods_num++
+      // console.log(goods_num)
+      axios.get('/lan/edit_cart?id=' + id + '&goods_num=' + goods_num).then(this.addSucc).catch(err => console.log(err))
+    },
+    addSucc (res) {
+      this.cartList = res.data.data.cartList
+      this.total_price = res.data.data.total_price
+    },
+    reduce (id, goods_num) {
+      if (goods_num <= 1) {
         Toast('不能再减少了')
         return false
       }
-      this.list[index].num--
+      goods_num--
+      axios.get('/lan/edit_cart?id=' + id + '&goods_num=' + goods_num).then(this.reduceSucc).catch(err => console.log(err))
     },
-    deleteItem (index) {
-      console.log(index)
+    reduceSucc (res) {
+      this.cartList = res.data.data.cartList
+      this.total_price = res.data.data.total_price
+    },
+    deleteItem (id) {
+      console.log(id)
+      axios.get('/lan/del_cart?id=' + id).then(this.deleteSucc).catch(err => console.log(err))
+    },
+    deleteSucc (res) {
+      if (res.data.code == 2000) {
+        this.init()
+      }
     },
     select () {
 

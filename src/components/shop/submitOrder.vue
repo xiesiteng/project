@@ -35,6 +35,8 @@
             暂无优惠券
             <img src="../../../static/images/index/more_small.png" alt="" class="arrow">
           </p>
+          <p v-show="!noDis && !disFlag" class="none">{{count}} 张优惠券可以使用</p>
+          <p v-show="disFlag" class="none">{{dis_money}}元优惠券</p>
         </div>
       </div>
       <!--订单信息-->
@@ -59,19 +61,19 @@
 
           <div class="order-info">
             <span class="person">商品金额:</span>
-            <p>￥399</p>
+            <p>￥{{cart_selected.goods_price}}</p>
           </div>
           <div class="order-info">
             <span class="person">运费:</span>
-            <p>+￥0.00</p>
+            <p>+￥{{total_price.total_postage}}</p>
           </div>
           <div class="order-info">
             <span class="person">优惠券抵扣:</span>
-            <p>-￥20.00</p>
+            <p>-￥{{dis_money}}</p>
           </div>
           <div class="order-info">
             <span class="person">实付金额:</span>
-            <p style="color: red">￥379.00</p>
+            <p style="color: red">￥{{actual_pay}}</p>
           </div>
 
         </div>
@@ -79,7 +81,7 @@
       <!--结算-->
       <div class="settlement">
         <div class="total">
-          结算总计：<span>￥399.9</span>
+          结算总计：<span>￥{{actual_pay}}</span>
         </div>
         <button class="btn">提交订单</button>
       </div>
@@ -89,21 +91,32 @@
         closeable
         position="bottom"
         :style="{ height: '80%' }"
+        @close="closeDis"
       >
         <div class="disc-wrap">
-          <div class="discount-item" v-for="(item, index) in 8" :key="index">
+          <div class="discount-item" v-for="(item, index) in disList" :key="index">
             <img src="../../../static/images/index/disc.png" alt="" class="dis-bg">
             <div class="dis-left">
-              <span>￥ <b>20</b></span>
+              <span>￥ <b>{{item.money}}</b></span>
               <p>优惠券</p>
             </div>
             <div class="dis-right">
-              <p>全场消费满100可用</p>
-              <span>2019-09-01前有效</span>
+              <p>全场消费满{{item.condition}}可用</p>
+              <span>{{fmtTime(item.use_end_time, 'Y-M-D')}}前有效</span>
             </div>
             <div class="dis-check">
-              <img src="../../../static/images/index/nocheck.png" alt="" v-show="!checked" @click="select">
-              <img src="../../../static/images/index/check.png" alt="" v-show="checked" @click="select">
+              <!--<img src="../../../static/images/index/nocheck.png" alt="" v-show="!item.flag" @click="select(index)">
+              <img src="../../../static/images/index/check.png" alt="" v-show="item.flag" @click="select(index)">-->
+              <van-radio-group v-model="radio">
+                <van-radio :name="index" @click="select(index)">
+
+                  <img
+                    slot="icon"
+                    slot-scope="props"
+                    :src="props.checked ? activeIcon : inactiveIcon"
+                  >
+                </van-radio>
+              </van-radio-group>
             </div>
           </div>
         </div>
@@ -144,6 +157,9 @@ export default {
   name: "submitOrder",
   data () {
     return{
+      radio: '1',
+      activeIcon: '../../../static/images/index/check.png',
+      inactiveIcon: '../../../static/images/index/nocheck.png',
       showDis: false,
       showAdd: false,
       checked: false,
@@ -152,7 +168,17 @@ export default {
       goods_id: '',
       cart_selected: {},
       total_price: {},
-      noDis: false
+      noDis: false,
+      count: '',
+      disList: [],
+      dis_money: '0.00',
+      disFlag: false
+    }
+  },
+  computed: {
+    actual_pay () {
+      // 实付金额
+      return this.cart_selected.goods_price - this.dis_money
     }
   },
   mounted () {
@@ -163,12 +189,19 @@ export default {
   },
   methods: {
     getDis () {
-      axios.get('/lan/coupon_list').then(this.getDisSucc).catch(err => console.log(err))
+      axios.get('/lan/coupon_list?type=0').then(this.getDisSucc).catch(err => console.log(err))
     },
     getDisSucc (res) {
       if (res.data.code == 2000) {
         if (res.data.data.result.length == 0) {
           this.noDis = true
+        } else {
+          this.count = res.data.data.count
+          this.disList = res.data.data.result
+          // for(let i=0; i<this.disList.length; i++) {
+          //   this.$set(this.disList[i], 'flag', false)
+          // }
+          // console.log(this.disList)
         }
       }
     },
@@ -191,9 +224,9 @@ export default {
       }
     },
     chooseDiscount () {
-      // if (this.noDis) {
-      //   return false
-      // }
+      if (this.noDis) {
+        return false
+      }
       this.showDis = true
     },
     chooseAddress () {
@@ -201,15 +234,50 @@ export default {
     },
     pickItem () {
       this.showDis = false
+      this.dis_money = this.disList[this.radio].money
+      this.disFlag = true
+      // console.log(this.dis_money)
+    },
+    closeDis () {
+      console.log('关闭popup弹出层')
+      // this.dis_money = '0.00'
+      // this.radio = -1
+      // for(let i=0;i<this.disList.length;i++) {
+      //   this.disList[i].flag = false
+      // }
     },
     pickAddress (item) {
       this.recInfo = item
       // console.log(this.recInfo)
       this.showAdd = false
     },
-    select () {
-      this.checked = !this.checked
-    }
+    select (index) {
+      // this.disList[index].flag = !this.disList[index].flag
+      // this.dis_money = this.disList[index].money
+      this.radio = index
+      console.log(this.dis_money)
+    },
+    fmtTime(number,format) {
+
+    // 毫秒级的时间戳转换
+    var date = new Date(number)
+    // var date = new Date();
+    var Y = date.getFullYear();
+    var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+    var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+    var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+    var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+    var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+    format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
+    format=format.indexOf('M')>-1?format.replace('M',M):format;
+    format=format.indexOf('D')>-1?format.replace('D',D):format;
+    format=format.indexOf('h')>-1?format.replace('h',h):format;
+    format=format.indexOf('m')>-1?format.replace('m',m):format;
+    format=format.indexOf('s')>-1?format.replace('s',s):format;
+    return format;
+  }
+
+
   }
 }
 </script>
