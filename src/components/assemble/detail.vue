@@ -1,17 +1,21 @@
 <template>
     <div class="main">
       <div>
-        <img src="../../../static/images/index/box.png" alt="" class="imgSize">
+        <van-swipe  indicator-color="white">
+          <van-swipe-item v-for="(item, index) in goods_images" :key="index">
+            <img :src="item.image_url" alt="" class="imgSize">
+          </van-swipe-item>
+        </van-swipe>
       </div>
       <!--信息-->
       <div class="pro">
         <div class="pro-info">
-          <p>￥<em>399.9</em></p>
-          <span class="pre-price">￥599.9</span>
-          <p class="num">预约数:598</p>
+          <p>￥<em>{{info.group_price}}</em></p>
+          <span class="pre-price">￥{{info.shop_price}}</span>
+          <p class="num">预约数:{{info.sales_sum}}</p>
         </div>
         <div class="pro-name">
-          <p>【光子嫩肤】全面解决皮肤暗沉/毛孔粗大/粗糙/祛斑/小细纹  重回少女肌】</p>
+          <p>{{info.goods_name}}</p>
         </div>
       </div>
       <!--公告-->
@@ -22,7 +26,7 @@
       <!--促销-->
       <div class="cux">
         <span>促销</span>
-        <p>【3人团】拼团结束恢复￥599.9，还剩29个名额</p>
+        <p>【3人团】拼团结束恢复￥{{info.shop_price}}，还剩{{info.store_count}}个名额</p>
       </div>
       <!--玩法-->
       <div class="play">
@@ -73,12 +77,12 @@
       </div>
       <!--按钮-->
       <div class="button-group">
-        <div class="tuan" style="border-right: 1px solid #fff" @click="toPay">
-          <span>￥399.9</span>
+        <div class="tuan" style="border-right: 1px solid #fff" @click="toPay(info.goods_id)">
+          <span>￥{{info.group_price}}</span>
           <p>开团(3人团)</p>
         </div>
         <div class="tuan">
-          <span>￥599.9</span>
+          <span>￥{{info.shop_price}}</span>
           <p>单独预约</p>
         </div>
       </div>
@@ -86,18 +90,32 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "detail",
   data () {
     return {
-
+      goods_id: '',
+      info: {},
+      goods_images: []
     }
   },
   mounted() {
+    this.goods_id = this.$route.query.goods_id
+    this.init()
   },
   methods: {
-    toPay () {
-      this.$router.push('/assemble/assemblePay')
+    init () {
+      axios.get('/lan/goods_detail?goods_id=' + this.goods_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.goods_images = res.data.data.goods_images
+        this.info = res.data.data.list
+      }
+    },
+    toPay (goods_id) {
+      this.$router.push({path: '/assemble/assemblePay', query: {goods_id: goods_id}})
     }
   }
 }
@@ -145,7 +163,7 @@ export default {
     color: #bbb;
     text-decoration: line-through;
     position: absolute;
-    left: 90px;
+    left: 110px;
   }
   .num{
     color: #999;

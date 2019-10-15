@@ -2,22 +2,22 @@
     <div class="main">
       <div class="pro-info">
         <div class="info-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="infoImg">
+          <img :src="info.original_img" alt="" class="infoImg">
         </div>
         <div class="info-right">
-          <p>光子嫩肤</p>
-          <div class="price">￥ <span>399.9</span></div>
+          <p>{{info.goods_name}}</p>
+          <div class="price">￥ <span>{{info.goods_price}}</span></div>
         </div>
       </div>
       <div class="space"></div>
       <div class="phoneCell">
         <span>手机号</span>
-        <p>18283350462</p>
+        <p>{{phone}}</p>
       </div>
       <!--底部结算-->
       <div class="pay-info">
         <div class="pay-money">
-          结算总计：<span>￥399.9</span>
+          结算总计：<span>￥{{info.goods_price}}</span>
         </div>
         <button class="topay" @click="pay">立即支付</button>
       </div>
@@ -25,16 +25,30 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: "assemblePay",
   data () {
     return{
-
+      goods_id: '',
+      info: {},
+      phone: ''
     }
   },
   mounted() {
+    this.goods_id = this.$route.query.goods_id
+    this.init()
   },
   methods:{
+    init () {
+      axios.get('/lan/settlement_cart?goods_id=' + this.goods_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.info = res.data.data.cart_selected
+        this.phone = res.data.data.extra.mobile
+      }
+    },
     pay () {
       this.$router.push('/assemble/paySuccess')
     }

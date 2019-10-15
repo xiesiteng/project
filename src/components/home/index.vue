@@ -22,8 +22,24 @@
           <div class="notice-wrap">
             <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
             <span class="notice-title">公告</span>
-            <p>【缦缦拼团】公告内容</p>
+            <p>【标题】内容</p>
           </div>
+
+          <!--<div class="notice-wrap">
+            <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
+            <span class="notice-title">公告</span>
+            <van-swipe
+              style="height: 50px; width: 250px"
+              vertical
+              show-indicators:false
+              autoplay="2000">
+              <van-swipe-item  style="height: 50px" v-for="(item, index) in noticeList" :key="index">
+                <p>【{{item.title}}】{{item.content}}</p>
+              </van-swipe-item>
+            </van-swipe>
+          </div>-->
+
+
           <!--banner-->
           <div class="banner-wrap">
             <img src="../../../static/images/banner.png" alt="" class="banner">
@@ -51,6 +67,7 @@
                 <p>倒计时</p>
                 <van-count-down :time="time">
                   <template v-slot="timeData">
+                    <span class="item">{{ timeData.days }}</span>&nbsp;天&nbsp;
                     <span class="item">{{ timeData.hours }}</span> :
                     <span class="item">{{ timeData.minutes }}</span> :
                     <span class="item">{{ timeData.seconds }}</span>
@@ -65,12 +82,13 @@
               </p>
             </div>
             <!--拼团start-->
-            <div class="ass-item" v-for="(item, index) in 3" :key="index">
+            <div class="ass-item" v-for="(item, index) in group_goods" :key="index">
               <div class="item-left">
-                <img src="../../../static/images/index/gznf.png" alt="" class="item-img">
+                <img :src="item.original_img" alt="" class="item-img">
+                <!--<img src="../../../static/images/index/gznf.png" alt="" class="item-img">-->
               </div>
               <div class="item-right">
-                <p class="title">光子嫩肤</p>
+                <p class="title">{{item.goods_name}}</p>
                 <div class="tag-wrap">
                   <span>3人团</span>
                   <span>需预约</span>
@@ -79,9 +97,9 @@
                 <div class="price-wrap">
                   <div class="include">
                     <em>￥</em>
-                    <p class="price">399.9</p>
+                    <p class="price">{{item.group_price}}</p>
                   </div>
-                  <span class="pre-price">￥599.9</span>
+                  <span class="pre-price">￥{{item.shop_price}}</span>
                   <button class="ping" @click="toAssem">去拼团</button>
                 </div>
               </div>
@@ -128,7 +146,7 @@
           </div>
 
           <div class="box-wrap">
-            <div class="box" v-for="(item, index) in score_goods" :key="index" @click="toIntegralDetail">
+            <div class="box" v-for="(item, index) in score_goods" :key="index" @click="toIntegralDetail(item.goods_id)">
               <!--多包一层div给border效果-->
               <div style="border: 1px solid #eee">
                 <div>
@@ -178,7 +196,11 @@ export default {
         }
       ],
       active: 2,
-      time: 10 * 60 * 60 * 1000
+      time: 0,
+      // time: 10 * 60 * 60 * 1000,
+      endTime: '',
+      group_goods: [],
+      animate: false
     }
   },
   components: {
@@ -186,25 +208,41 @@ export default {
   },
   mounted () {
     this.init()
+    // setInterval(this.showMarquee, 2000)
   },
   methods: {
     init () {
-      axios.get('/lan/_index?prom_type=1').then(this.initSucc).catch(err => console.log(err))
+      axios.get('/lan/_index?prom_type=' + this.active).then(this.initSucc).catch(err => console.log(err))
     },
     initSucc (res) {
       // console.log(res.data)
       this.bannerList = res.data.banner
       this.noticeList = res.data.notice
+      this.$set(this.noticeList, 'flag', false)
       this.article_banner = res.data.article_banner
       this.score_goods = res.data.score_goods
+      this.group_goods = res.data.group_goods
+      if (this.active == 2) {
+        this.endTime = this.group_goods[0].group_end_time
+        // this.endTime = this.fmtTime(this.endTime, 'Y/M/D h:m:s')
+        // console.log(this.endTime)
+        var date1 = new Date()
+        var date2 = new Date(this.endTime)
+        var s1 = date1.getTime(),s2 = date2.getTime();
+        var total = (s2 - s1);
+        console.log(total)
+        this.time = total
+      }
       // console.log(this.noticeList)
     },
       choose (val) {
-        if (val == 1) {
-          this.active = 1
-        } else {
-          this.active = 2
-        }
+        // if (val == 1) {
+        //   this.active = 1
+        // } else {
+        //   this.active = 2
+        // }
+        this.active = val
+        this.init()
       },
     toTurn (val) {
       switch (val) {
@@ -231,8 +269,36 @@ export default {
     toAssem () {
       this.$router.push('/assemble/assemblePay')
     },
-    toIntegralDetail () {
-      this.$router.push('/integral/detail')
+    toIntegralDetail (goods_id) {
+      this.$router.push({path: '/integral/detail', query:{goods_id: goods_id}})
+    },
+    // showMarquee: function () {
+    //
+    //     this.noticeList[0].flag = true
+    //     setTimeout(()=>{
+    //       this.noticeList.push(this.noticeList[0]);
+    //       this.noticeList.shift();
+    //       this.noticeList[0].flag = false
+    //     },500)
+    //
+    //   },
+    fmtTime(number,format) {
+      // 毫秒级的时间戳转换
+      var date = new Date(number)
+      // var date = new Date();
+      var Y = date.getFullYear();
+      var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+      var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
+      format=format.indexOf('M')>-1?format.replace('M',M):format;
+      format=format.indexOf('D')>-1?format.replace('D',D):format;
+      format=format.indexOf('h')>-1?format.replace('h',h):format;
+      format=format.indexOf('m')>-1?format.replace('m',m):format;
+      format=format.indexOf('s')>-1?format.replace('s',s):format;
+      return format;
     }
   }
 }
@@ -287,7 +353,9 @@ p
     display flex
     align-items center
     box-sizing border-box
-    padding 15px
+    padding 0 15px
+    height 50px
+    line-height 50px
     .notice-icon
       width 15px
       height 15px
@@ -531,4 +599,6 @@ p
           margin-right 12px
         p
           color #666
+
+
 </style>

@@ -1,19 +1,20 @@
 <template>
     <div class="main">
       <div class="assemble-wrap">
-        <div :class="['assemble-title', this.active == 0 ? 'assemble-title-active' : '']" @click="choose(0)">
+        <div :class="['assemble-title', this.active == 1 ? 'assemble-title-active' : '']" @click="choose(1)">
           <p>超值拼团</p>
         </div>
-        <div :class="['assemble-title', this.active == 1 ? 'assemble-title-active' : '']" @click="choose(1)">
+        <div :class="['assemble-title', this.active == 2 ? 'assemble-title-active' : '']" @click="choose(2)">
           <p>限时拼团</p>
         </div>
       </div>
       <!--限时拼团部分-->
       <div class="time_ass">
-        <div class="time-title" v-show="active == 1">
+        <div class="time-title" v-show="active == 2">
           <div>倒计时</div>
           <van-count-down :time="time">
             <template v-slot="timeData">
+              <span class="item">{{ timeData.days }}</span>&nbsp;天&nbsp;
               <span class="item">{{ timeData.hours }}</span> :
               <span class="item">{{ timeData.minutes }}</span> :
               <span class="item">{{ timeData.seconds }}</span>
@@ -21,12 +22,13 @@
           </van-count-down>
         </div>
         <!--拼团start-->
-        <div class="ass-item" v-for="(item, index) in 3" :key="index">
+        <div class="ass-item" v-for="(item, index) in list" :key="index">
           <div class="item-left">
-            <img src="../../../static/images/index/gznf.png" alt="" class="item-img">
+            <img :src="item.original_img" alt="" class="item-img">
+            <!--<img src="../../../static/images/index/gznf.png" alt="" class="item-img">-->
           </div>
           <div class="item-right">
-            <p class="title">光子嫩肤</p>
+            <p class="title">{{item.goods_name}}</p>
             <div class="tag-wrap">
               <span>3人团</span>
               <span>需预约</span>
@@ -35,10 +37,10 @@
             <div class="price-wrap">
               <div class="include">
                 <em>￥</em>
-                <p class="price">399.9</p>
+                <p class="price">{{item.group_price}}</p>
               </div>
-              <span class="pre-price">￥599.9</span>
-              <button class="ping" @click="toDetail">去拼团</button>
+              <span class="pre-price">￥{{item.shop_price}}</span>
+              <button class="ping" @click="toDetail(item.goods_id)">去拼团</button>
             </div>
           </div>
         </div>
@@ -48,26 +50,61 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: "assemble",
   data () {
     return {
-      active: 0,
-      time: 10 * 60 * 60 * 1000
+      active: 2,
+      time: 10 * 60 * 60 * 1000,
+      page: 1,
+      list: [],
+      endTime: ''
     }
   },
   mounted() {
+    this.init()
   },
   methods: {
-    choose (val) {
-      if (val == 0) {
-        this.active = 0
-      } else {
-        this.active = 1
+    init () {
+      axios.get('/lan/goods_list?prom_type=' + this.active + '&page=' + this.page + '&cat_id=900').then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.list = res.data.data.list
+        // 若endTime返回秒级时间戳则乘1000则得到毫秒级
+        this.endTime = this.list[0].group_end_time
+        var date1 = new Date()
+        // var date2 = new Date(this.endTime)
+        var s1 = date1.getTime(),s2 = this.endTime * 1000;
+        var total = (s2 - s1);
+        this.time = total
       }
     },
-    toDetail () {
-      this.$router.push('/assemble/detail')
+    choose (val) {
+      this.active = val
+      this.init()
+    },
+    toDetail (goods_id) {
+      this.$router.push({path: '/assemble/detail', query: {goods_id: goods_id}})
+    },
+    fmtTime(number,format) {
+      // 毫秒级的时间戳转换
+      var date = new Date(number)
+      // var date = new Date();
+      var Y = date.getFullYear();
+      var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+      var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
+      format=format.indexOf('M')>-1?format.replace('M',M):format;
+      format=format.indexOf('D')>-1?format.replace('D',D):format;
+      format=format.indexOf('h')>-1?format.replace('h',h):format;
+      format=format.indexOf('m')>-1?format.replace('m',m):format;
+      format=format.indexOf('s')>-1?format.replace('s',s):format;
+      return format;
     }
   }
 }

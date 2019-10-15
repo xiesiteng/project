@@ -8,47 +8,78 @@
     </div>-->
 
     <div class="time_ass">
-
-      <!--拼团start-->
-      <div class="ass-item" v-for="(item, index) in 3" :key="index">
-        <div class="item-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="item-img">
-        </div>
-        <div class="item-right">
-          <p class="title">光子嫩肤</p>
-          <div class="tag-wrap">
-            <p>剩余名额29个</p>
+      <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+        <div class="ass-item" v-for="(item, index) in list" :key="index">
+          <div class="item-left">
+            <!--<img src="../../../static/images/index/gznf.png" alt="" class="item-img">-->
+            <img :src="item.original_img" alt="" class="item-img">
           </div>
-          <!--价格和拼团按钮-->
-          <div class="price-wrap">
-            <div class="include">
-              <span class="dui">兑</span>
-              <p class="price">500.9</p>
-              <em>&nbsp;积分</em>
+          <div class="item-right">
+            <p class="title">{{item.goods_name}}</p>
+            <div class="tag-wrap">
+              <p>剩余名额{{item.store_count}}个</p>
             </div>
-            <span class="ping" @click="toDetail">去兑换</span>
+            <!--价格和按钮-->
+            <div class="price-wrap">
+              <div class="include">
+                <span class="dui">兑</span>
+                <p class="price">{{item.exchange_integral}}</p>
+                <em>&nbsp;积分</em>
+              </div>
+              <span class="ping" @click="toDetail(item.goods_id)">去兑换</span>
+            </div>
           </div>
         </div>
-      </div>
-      <!--拼团end-->
+      </scroll>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "integral",
-    data () {
-      return {}
-    },
-    mounted() {
-    },
-    methods:{
-      toDetail () {
-        this.$router.push('/integral/detail')
-      }
+import axios from 'axios'
+import scroll from '../common/scroll'
+export default {
+  name: "integral",
+  data () {
+    return {
+      page: 1,
+      list: [],
+      enableLoadMore: true
     }
+  },
+  components: {
+    scroll
+  },
+  mounted() {
+    this.init()
+  },
+  methods:{
+    init () {
+      axios.get('/lan/goods_list?cat_id=899' + '&page=' + this.page).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        if (res.data.data.list.length == 0) {
+          this.enableLoadMore = false
+        }
+        this.list = this.list.concat(res.data.data.list)
+      }
+    },
+    toDetail (goods_id) {
+      this.$router.push({path: '/integral/detail', query: {goods_id: goods_id}})
+    },
+    onLoadMore(done) {
+      setTimeout(()=>{
+        if(!this.enableLoadMore) {
+          return
+        }
+        this.page++
+        this.init()
+        done();
+      }, 200)
+    },
   }
+}
 </script>
 
 <style scoped>

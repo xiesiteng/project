@@ -1,20 +1,24 @@
 <template>
   <div class="main">
     <div>
-      <img src="../../../static/images/index/box.png" alt="" class="imgSize">
+      <van-swipe  indicator-color="white">
+        <van-swipe-item v-for="(item, index) in goods_images" :key="index">
+          <img :src="item.image_url" alt="" class="imgSize">
+        </van-swipe-item>
+      </van-swipe>
     </div>
     <!--信息-->
     <div class="pro">
       <div class="pro-info">
         <div class="JF">
           <span class="dui">兑</span>
-          <p><em>399.9</em>&nbsp;积分</p>
+          <p><em>{{info.exchange_integral}}</em>&nbsp;积分</p>
         </div>
         <span class="pre-price">￥599.9</span>
-        <p class="num">剩余名额23个</p>
+        <p class="num">剩余名额{{info.store_count}}个</p>
       </div>
       <div class="pro-name">
-        <p>【光子嫩肤】全面解决皮肤暗沉/毛孔粗大/粗糙/祛斑/小细纹  重回少女肌】</p>
+        <p>{{info.goods_name}}</p>
       </div>
     </div>
     <!--公告-->
@@ -23,10 +27,10 @@
       <p>积分兑换的商品不支持服务退换</p>
     </div>
     <!--促销-->
-    <div class="cux">
+    <!--<div class="cux">
       <span>促销</span>
       <p>【3人团】拼团结束恢复￥599.9，还剩29个名额</p>
-    </div>
+    </div>-->
     <!--位置-->
     <div class="basic">
       <div class="basic-left">
@@ -40,29 +44,47 @@
       </div>
     </div>
     <!--立即兑换-->
-    <div class="rightNow" @click="toIntegralPay">兑换预约</div>
+    <div class="rightNow" @click="toIntegralPay(info.goods_id)">兑换预约</div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "detail",
-    data () {
-      return{
-
-      }
+import axios from 'axios'
+export default {
+  name: "detail",
+  data () {
+    return{
+      goods_id: '',
+      goods_images: [],
+      info: {}
+    }
+  },
+  mounted() {
+    this.goods_id = this.$route.query.goods_id
+    this.init()
+  },
+  methods:{
+    toIntegralPay (goods_id) {
+      this.$router.push({path: '/integral/integralPay', query: {goods_id: goods_id}})
     },
-    mounted() {
+    init () {
+      axios.get('/lan/goods_detail?goods_id=' + this.goods_id).then(this.initSucc).catch(err => console.log(err))
     },
-    methods:{
-      toIntegralPay () {
-        this.$router.push('/integral/integralPay')
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.goods_images = res.data.data.goods_images
+        this.info = res.data.data.list
       }
     }
   }
+}
 </script>
 
 <style scoped>
+  .imgSize{
+    width: 100%;
+    height: 375px;
+  }
   em{
     padding-top: 10px;
     font-style: normal;

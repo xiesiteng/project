@@ -28,8 +28,12 @@
               <p class="title">光子嫩肤</p>
               <p class="time">预约时间：2019-08-01  10:30am</p>
               <div class="button-group">
-                <button @click.stop="cancelOrder">取消订单</button>
-                <button @click.stop="send">提醒发货</button>
+                <button class="btn1" @click.stop="cancelOrder" v-show="false">取消订单</button>
+                <button class="btn1" @click.stop="scanLog" v-show="true">查看物流</button>
+                <button class="btn2" @click.stop="send" v-show="false">提醒发货</button>
+                <button class="btn2" @click.stop="toPay" v-show="false">去付款</button>
+                <button class="btn2" @click.stop="recive" v-show="false">确认收货</button>
+                <button class="btn2" @click.stop="evaluate" v-show="true">评价</button>
               </div>
             </div>
           </div>
@@ -128,6 +132,26 @@ export default {
       if (res.data.code == 2000) {
         this.init()
       }
+    },
+    toPay (order_id) {
+      axios.get('/lan/quickly_pay?order_id=' + order_id).then(this.paySucc).catch(err => console.log(err))
+    },
+    paySucc (res) {
+
+    },
+    recive (order_id) {
+      axios.get('/lan/order_finish?order_id=' + order_id).then(this.reciveSucc).catch(err => console.log(err))
+    },
+    reciveSucc (res) {
+
+    },
+    evaluate (order_id) {
+      this.$router.push({path: '/person/evaluate'})
+      // this.$router.push({path: '/person/evaluate', query: {order_id: order_id}})
+    },
+    scanLog (order_id) {
+      this.$router.push({path: '/person/logistics'})
+      // this.$router.push({path: '/person/logistics', query: {order_id: order_id}})
     }
   }
 }
@@ -237,7 +261,7 @@ export default {
     display: flex;
     justify-content: flex-end;
   }
-  .button-group button:nth-child(1) {
+  .btn1 {
     border: none;
     width: 70px;
     height: 28px;
@@ -248,7 +272,7 @@ export default {
     box-sizing: border-box;
     border-radius: 14px;
   }
-  .button-group button:nth-child(2) {
+  .btn2 {
     border: none;
     width: 70px;
     height: 28px;
