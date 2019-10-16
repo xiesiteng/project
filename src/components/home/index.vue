@@ -19,25 +19,30 @@
             </div>
           </div>
           <!--公告-->
-          <div class="notice-wrap">
-            <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
-            <span class="notice-title">公告</span>
-            <p>【标题】内容</p>
-          </div>
 
           <!--<div class="notice-wrap">
             <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
             <span class="notice-title">公告</span>
+            <p>【标题】内容</p>
+          </div>-->
+
+          <div class="notice-wrap">
+            <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
+            <span class="notice-title">公告</span>
             <van-swipe
-              style="height: 50px; width: 250px"
+              style="height: 50px; width: 280px"
               vertical
-              show-indicators:false
+              show-indicators="false"
               autoplay="2000">
               <van-swipe-item  style="height: 50px" v-for="(item, index) in noticeList" :key="index">
-                <p>【{{item.title}}】{{item.content}}</p>
+                <p class="hid"><span>【{{item.title}}】</span> <span v-html="item.content"></span></p>
               </van-swipe-item>
+
+              <div class="custom-indicator" slot="indicator">
+                <!--设置轮播的指示器为空-->
+              </div>
             </van-swipe>
-          </div>-->
+          </div>
 
 
           <!--banner-->
@@ -600,5 +605,10 @@ p
         p
           color #666
 
-
+.hid
+  width 100%
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  display flex
 </style>

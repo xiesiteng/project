@@ -22,7 +22,7 @@
     <!--底部结算-->
     <div class="pay-info">
       <div class="pay-money">
-        结算总计：<span>{{info.exchange_integral}}积分</span>
+        结算总计：<span>{{total_price.total_integral}}积分</span>
       </div>
       <button class="topay" @click="pay">立即预约</button>
     </div>
@@ -37,7 +37,8 @@ export default {
     return{
       goods_id: '',
       info: {},
-      phone: ''
+      phone: '',
+      total_price: {}
     }
   },
   mounted() {
@@ -52,6 +53,7 @@ export default {
       if (res.data.code == 2000) {
         this.info = res.data.data.cart_selected
         this.phone = res.data.data.extra.mobile
+        this.total_price = res.data.data.total_price
       }
     },
     pay () {
