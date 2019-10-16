@@ -29,34 +29,34 @@
         <div class="myOrder">
           <div class="order-title">
             <p>我的订单</p>
-            <span @click="tomyOrder">查看我的订单&nbsp;&nbsp;
+            <span @click="toOrder">查看我的订单&nbsp;&nbsp;
               <img src="../../../static/images/index/more.png" alt="" class="more">
             </span>
           </div>
           <!--四个图标-->
           <div class="four-icon">
-            <div class="icon-wrap" @click="tomyOrder">
+            <div class="icon-wrap" @click="tomyOrder(1)">
               <div class="icon">
                 <span class="cir" v-show="info.wait_pay_order_num !== 0">{{info.wait_pay_order_num}}</span>
                 <img src="../../../static/images/index/noPay.png" alt="">
               </div>
               <p>待付款</p>
             </div>
-            <div class="icon-wrap" @click="tomyOrder">
+            <div class="icon-wrap" @click="tomyOrder(2)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/noSend.png" alt="">
               </div>
               <p>待发货</p>
             </div>
-            <div class="icon-wrap" @click="tomyOrder">
+            <div class="icon-wrap" @click="tomyOrder(3)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/noRecive.png" alt="">
               </div>
               <p>待收货</p>
             </div>
-            <div class="icon-wrap" @click="tomyOrder">
+            <div class="icon-wrap" @click="tomyOrder(4)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
                 <img src="../../../static/images/index/nobb.png" alt="">
@@ -129,8 +129,11 @@ export default {
     toExchange () {
       this.$router.push('/integral/exchange')
     },
-    tomyOrder () {
+    toOrder () {
       this.$router.push('/person/myOrder')
+    },
+    tomyOrder (val) {
+      this.$router.push({path:'/person/myOrder', query: {active: val}})
     },
     toshopCar () {
       this.$router.push('/shop/shopCar')

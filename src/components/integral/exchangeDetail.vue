@@ -1,14 +1,14 @@
 <template>
     <div class="main">
-      <div class="exc-content">
+      <div class="exc-content" v-for="(item, index) in info.order_goods" :key="index">
         <div class="content-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="size">
+          <img :src="item.original_img" alt="" class="size">
         </div>
         <div class="content-right">
-          <p>光子嫩肤</p>
+          <p>{{item.goods_name}}</p>
           <div class="include">
             <span class="dui">兑</span>
-            <p class="price">500.9</p>
+            <p class="price">{{info.integral}}</p>
             <em>&nbsp;积分</em>
           </div>
         </div>
@@ -19,30 +19,48 @@
       <div class="cell">
         <p>积分使用</p>
         <div>
-          <span>500</span>
+          <span>{{info.integral}}</span>
           <img src="../../../static/images/index/integral.png" alt="">
         </div>
       </div>
       <div class="cell">
         <p>剩余积分</p>
         <div>
-          <span>10</span>
+          <span>{{info.last_pay_points}}</span>
           <img src="../../../static/images/index/integral.png" alt="">
         </div>
       </div>
       <!--编号和时间-->
       <div class="bottom-info">
-        <p>兑换编号：20190801002</p>
-        <p>兑换时间：2019-08-01  10:22:36</p>
+        <p>兑换编号：{{info.order_sn}}</p>
+        <p>兑换时间：{{info.add_time}}</p>
       </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "exchangeDetail",
   data () {
-    return {}
+    return {
+      order_id: '',
+      info: {}
+    }
+  },
+  mounted() {
+    this.order_id = this.$route.query.order_id
+    this.init()
+  },
+  methods: {
+    init () {
+      axios.get('/lan/order_details?order_id=' + this.order_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.info = res.data.data
+      }
+    }
   }
 }
 </script>

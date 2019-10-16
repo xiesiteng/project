@@ -1,36 +1,69 @@
 <template>
     <div class="main">
-      <div class="exchange" v-for="(item, index) in 3" :key="index">
-        <div class="exc-title">
-          <p>预约编号：20190801001</p>
-          <img src="../../../static/images/index/delete.png" alt="">
-        </div>
-        <!--内容-->
-        <div class="exc-content">
-          <div class="content-left">
-            <img src="../../../static/images/index/gznf.png" alt="" class="size">
+      <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+        <div class="exchange" v-for="(item, index) in list" :key="index">
+          <div class="exc-title">
+            <p>预约编号：{{item.order_sn}}</p>
+            <img src="../../../static/images/index/delete.png" alt="">
           </div>
-          <div class="content-right">
-            <p>光子嫩肤</p>
-            <span>500积分</span>
-            <button @click="toDetail">查看详情</button>
+          <!--内容-->
+          <div class="exc-content">
+            <div class="content-left">
+              <img :src="item.goods.original_img" alt="" class="size">
+            </div>
+            <div class="content-right">
+              <p>{{item.goods.goods_name}}</p>
+              <span>{{item.integral}}积分</span>
+              <button @click="toDetail(item.order_id)">查看详情</button>
+            </div>
           </div>
         </div>
-      </div>
+      </scroll>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import scroll from '../common/scroll'
 export default {
     name: "exchange",
   data () {
-    return {}
+    return {
+      enableLoadMore: true,
+      page: 1,
+      list: []
+    }
+  },
+  components: {
+      scroll
   },
   mounted() {
+    this.init()
   },
   methods:{
-    toDetail () {
-      this.$router.push('/integral/exchangeDetail')
+    init () {
+      axios.get('/lan/order_lists?order_prom_type=4' + '&page=' + this.page).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        if (res.data.data.list.length == 0) {
+          this.enableLoadMore = false
+        }
+        this.list = this.list.concat(res.data.data.list)
+      }
+    },
+    toDetail (order_id) {
+      this.$router.push({path: '/integral/exchangeDetail', query: {order_id: order_id}})
+    },
+    onLoadMore(done) {
+      setTimeout(()=>{
+        if(!this.enableLoadMore) {
+          return
+        }
+        this.page++
+        this.init()
+        done();
+      }, 200)
     }
   }
 }

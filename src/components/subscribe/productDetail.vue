@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--按钮-->
-    <div class="btn">立即预约</div>
+    <div class="btn" @click="subscribe(proInfo.goods_id)">立即预约</div>
 
   </div>
 </template>
@@ -81,6 +81,9 @@ export default {
         this.proInfo = res.data.data.list
         // this.store_info = res.data.data.store_info
       }
+    },
+    subscribe (goods_id) {
+      this.$router.push({path: '/subscribe/subscribeNow', query: {goods_id: goods_id}})
     }
   }
 }

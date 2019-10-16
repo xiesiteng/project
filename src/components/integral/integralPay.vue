@@ -24,13 +24,14 @@
       <div class="pay-money">
         结算总计：<span>{{total_price.total_integral}}积分</span>
       </div>
-      <button class="topay" @click="pay">立即预约</button>
+      <button class="topay" @click="pay">兑换</button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import {Toast} from 'vant'
 export default {
   name: "integralPay",
   data () {
@@ -57,7 +58,14 @@ export default {
       }
     },
     pay () {
-
+      axios.get('/lan/order_add_cart?order_prop_type=4' + '&goods_id=' + this.goods_id).then(this.paySucc).catch(err => console.log(err))
+    },
+    paySucc (res) {
+      if (res.data.code == 2000) {
+        Toast('积分兑换成功')
+      } else {
+        Toast(res.data.data.msg)
+      }
     }
   }
 }

@@ -2,23 +2,25 @@
   <div class="main">
     <div class="nav-wrap">
       <ul class="nav">
-        <li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>
+        <!--<li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>-->
+        <li :class="[active == 2 ? 'nav-active' : '']" @click="choose(2)">未进行</li>
+        <li :class="[active == 3 ? 'nav-active' : '']" @click="choose(3)">已完成</li>
       </ul>
     </div>
     <!--未进行-->
-    <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 0">
+    <div class="order-info" v-for="(item, index) in list" :key="index" v-show="active == 2">
       <div class="orderNum">
-        <p>预约编号：20190801001</p>
+        <p>预约编号：{{item.order_sn}}</p>
         <!--<span>拼团中</span>-->
         <img src="../../../static/images/index/delete.png" alt="">
       </div>
-      <div class="info" @click="toUnderway">
+      <div class="info" @click="toUnderway(item.order_id)">
         <div class="info-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="size">
+          <img :src="item.goods.original_img" alt="" class="size">
         </div>
         <div class="info-right">
-          <p class="title">光子嫩肤</p>
-          <p class="time">预约时间：2019-08-01  10:30am</p>
+          <p class="title">{{item.goods.goods_name}}</p>
+          <p class="time">预约时间：{{item.book_time}}</p>
           <div class="button-group">
             <button>确认到店</button>
           </div>
@@ -26,19 +28,19 @@
       </div>
     </div>
     <!--已完成-->
-    <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 1">
+    <div class="order-info" v-for="(item, index) in list" :key="index" v-show="active == 3">
       <div class="orderNum">
-        <p>预约编号：20190801001</p>
+        <p>预约编号：{{item.order_sn}}</p>
         <!--<span>拼团成功</span>-->
         <img src="../../../static/images/index/delete.png" alt="">
       </div>
-      <div class="info" @click="toCompleted">
+      <div class="info" @click="toCompleted(item.order_id)">
         <div class="info-left">
-          <img src="../../../static/images/index/gznf.png" alt="" class="size">
+          <img :src="item.goods.original_img" alt="" class="size">
         </div>
         <div class="info-right">
-          <p class="title">光子嫩肤</p>
-          <p class="time">预约时间：2019-08-01  10:30am</p>
+          <p class="title">{{item.goods.goods_name}}</p>
+          <p class="time">预约时间：{{item.book_time}}</p>
           <div class="button-group">
             <button class="finish">已完成</button>
           </div>
@@ -49,26 +51,40 @@
 </template>
 
 <script>
-  export default {
-    name: "myAssemble",
-    data () {
-      return{
-        active: 0,
-        navList: ['未进行', '已完成']
+import axios from 'axios'
+export default {
+  name: "myAssemble",
+  data () {
+    return{
+      active: 2,
+      // navList: ['未进行', '已完成']
+      list: []
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  methods: {
+    init () {
+      axios.get('/lan/order_lists?order_prom_type=3' + '&order_status=' + this.active).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.list = res.data.data.list
       }
     },
-    methods: {
-      choose (val) {
-        this.active = val
-      },
-      toUnderway () {
-        this.$router.push('/subscribe/underway')
-      },
-      toCompleted () {
-        this.$router.push('/subscribe/completed')
-      }
+    choose (val) {
+      this.active = val
+      this.init()
+    },
+    toUnderway (order_id) {
+      this.$router.push({path: '/subscribe/underway', query: {order_id: order_id}})
+    },
+    toCompleted (order_id) {
+      this.$router.push({path: '/subscribe/completed', query: {order_id: order_id}})
     }
   }
+}
 </script>
 
 <style scoped>

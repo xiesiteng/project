@@ -68,6 +68,7 @@
             v-model="value"
             placeholder="搜索商品"
             show-action
+            :clearable="false"
             @search="onSearch"
             @cancel="onCancel"
             @clear="onClear"

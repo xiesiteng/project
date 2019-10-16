@@ -28,6 +28,8 @@
           multiple
           :max-count="4"
           :after-read="afterRead"
+          @delete="deleteImage"
+          ref="uploader"
         >
           <div class="picture">
             <img src="../../../static/images/index/camera.png" alt="">
@@ -70,12 +72,15 @@ export default {
       axios.post('/lan/upload_img', params).then(this.uploadSucc).catch(err => console.log(err))
     },
     uploadSucc (res) {
-      console.log(res.data)
+      // console.log(res.data)
       if (res.data.code == 2000) {
         // console.log(this.list, this.lsit.length)
         this.list.push(res.data.data.url)
-        console.log(this.list)
+        // console.log(this.list)
       }
+    },
+    deleteImage () {
+      console.log(111, this.$refs.uploader)
     },
     submit () {
       if (this.active == 0) {

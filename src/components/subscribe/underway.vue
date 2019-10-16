@@ -5,7 +5,7 @@
         <img src="../../../static/images/index/store.png" alt="">
         <span>门店地址</span>
       </div>
-      <div class="info-content">南山区华侨城 创意文化园北园A1栋首层114号</div>
+      <div class="info-content">{{info.store_address}}</div>
     </div>
 
     <div class="info-item">
@@ -13,7 +13,7 @@
         <img src="../../../static/images/index/time.png" alt="">
         <span>预约时间</span>
       </div>
-      <div class="info-content">08-03   后天  10:30</div>
+      <div class="info-content">{{info.book_time}}</div>
     </div>
 
     <div class="info-item">
@@ -21,7 +21,7 @@
         <img src="../../../static/images/index/project.png" alt="">
         <span>预约项目</span>
       </div>
-      <div class="info-content">深沉清洁</div>
+      <div class="info-content" v-for="(item, index) in info.order_goods" :key="index">{{item.goods_name}}</div>
     </div>
 
     <div class="disc">
@@ -29,7 +29,8 @@
         <img src="../../../static/images/index/dis.png" alt="">
         <span>优惠券使用</span>
       </div>
-      <p class="use">￥20元优惠券</p>
+      <p class="use" v-show="info.coupon_price !== 0">￥{{info.coupon_price}}元优惠券</p>
+      <p class="noUse" v-show="info.coupon_price == 0">未使用优惠券</p>
     </div>
 
     <div class="message">
@@ -37,22 +38,54 @@
       <span>捎句话</span>
     </div>
     <div class="textarea-wrap">
-      <textarea name="" id="" cols="30" rows="6" class="mess-content" v-model="txt"></textarea>
+      <textarea name="" id="" cols="30" rows="6" class="mess-content" disabled v-model="txt"></textarea>
     </div>
     <!--底部按钮-->
-    <button class="btn">确认到店</button>
+    <button class="btn" @click="sureArrive">确认到店</button>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "underway",
-    data () {
-      return{
-        txt: '我需要Tony老师给我做'
+import {Toast} from 'vant'
+import axios from 'axios'
+export default {
+  name: "underway",
+  data () {
+    return{
+      txt: '',
+      order_id: '',
+      info: {}
+    }
+  },
+  mounted() {
+    this.order_id = this.$route.query.order_id
+    this.init()
+  },
+  methods: {
+    init () {
+      axios.get('/lan/order_details?order_id=' + this.order_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.info = res.data.data
+        this.txt = res.data.data.user_note
+        if (this.txt == '') {
+          this.txt = '暂无信息哦'
+        }
+      }
+    },
+    sureArrive () {
+      axios.get('/lan/order_finish?order_id=' + this.order_id).then(this.sureArriveSucc).catch(err => console.log(err))
+    },
+    sureArriveSucc (res) {
+      if (res.data.code == 2000) {
+        Toast('操作成功')
+        setTimeout(
+          () =>this.$router.push('/subscribe/subscribe'), 2000)
       }
     }
   }
+}
 </script>
 
 <style scoped>
@@ -107,6 +140,7 @@
     border-radius: 8px;
     padding: 16px 26px;
     color: #666666;
+    background-color: #fff;
   }
   .btn{
     width: 100%;
@@ -120,5 +154,8 @@
   }
   .use{
     color: #FF9C99;
+  }
+  .noUse {
+    color: #999;
   }
 </style>

@@ -8,14 +8,14 @@
           </van-swipe>
           <!--advisement-->
           <div class="ad-wrap">
-            <div class="ad-item" v-for="(item, index) in adList" :key="index" @click="toTurn(index)">
+            <div class="ad-item" v-for="(item, index) in goods_category" :key="index" @click="toTurn(item.name, item.id)">
               <van-image
                 round
                 width="44px"
                 height="44px"
-                :src="item.img"
+                :src="item.image"
               />
-              <span class="ad-text">{{item.text}}</span>
+              <span class="ad-text">{{item.name}}</span>
             </div>
           </div>
           <!--公告-->
@@ -32,8 +32,9 @@
             <van-swipe
               style="height: 50px; width: 280px"
               vertical
-              show-indicators="false"
-              autoplay="2000">
+              :show-indicators="false"
+              :touchable="false"
+              :autoplay="3000">
               <van-swipe-item  style="height: 50px" v-for="(item, index) in noticeList" :key="index">
                 <p class="hid"><span>【{{item.title}}】</span> <span v-html="item.content"></span></p>
               </van-swipe-item>
@@ -205,7 +206,8 @@ export default {
       // time: 10 * 60 * 60 * 1000,
       endTime: '',
       group_goods: [],
-      animate: false
+      animate: false,
+      goods_category: []
     }
   },
   components: {
@@ -223,7 +225,8 @@ export default {
       // console.log(res.data)
       this.bannerList = res.data.banner
       this.noticeList = res.data.notice
-      this.$set(this.noticeList, 'flag', false)
+      this.goods_category = res.data.goods_category
+      // this.$set(this.noticeList, 'flag', false)
       this.article_banner = res.data.article_banner
       this.score_goods = res.data.score_goods
       this.group_goods = res.data.group_goods
@@ -241,27 +244,23 @@ export default {
       // console.log(this.noticeList)
     },
       choose (val) {
-        // if (val == 1) {
-        //   this.active = 1
-        // } else {
-        //   this.active = 2
-        // }
+
         this.active = val
         this.init()
       },
-    toTurn (val) {
-      switch (val) {
-        case 0:
-          this.$router.push('/navPage/faceManage')
+    toTurn (name, id) {
+      switch (name) {
+        case '面部管理':
+          this.$router.push({path: '/navPage/faceManage', query: {id: id}})
           break
-        case 1:
-          this.$router.push('/navPage/skinManage')
+        case '焕肤管理':
+          this.$router.push({path: '/navPage/skinManage', query: {id: id}})
           break
-        case 2:
-          this.$router.push('/navPage/event')
+        case 'EVENT':
+          this.$router.push({path: '/navPage/event', query: {id: id}})
           break
-        case 3:
-          this.$router.push('/navPage/bodyCare')
+        case 'BODY_CARE':
+          this.$router.push({path:'/navPage/bodyCare', query: {id: id}})
           break
       }
     },
@@ -277,16 +276,7 @@ export default {
     toIntegralDetail (goods_id) {
       this.$router.push({path: '/integral/detail', query:{goods_id: goods_id}})
     },
-    // showMarquee: function () {
-    //
-    //     this.noticeList[0].flag = true
-    //     setTimeout(()=>{
-    //       this.noticeList.push(this.noticeList[0]);
-    //       this.noticeList.shift();
-    //       this.noticeList[0].flag = false
-    //     },500)
-    //
-    //   },
+
     fmtTime(number,format) {
       // 毫秒级的时间戳转换
       var date = new Date(number)

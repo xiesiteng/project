@@ -62,6 +62,22 @@ export default {
     scroll
   },
   mounted () {
+    if (this.$route.query.active == 1) {
+      this.active = this.$route.query.active
+      this.init()
+    }
+    if (this.$route.query.active == 2) {
+      this.active = this.$route.query.active
+      this.init()
+    }
+    if (this.$route.query.active == 3) {
+      this.active = this.$route.query.active
+      this.init()
+    }
+    if (this.$route.query.active == 4) {
+      this.active = this.$route.query.active
+      this.init()
+    }
     this.init()
   },
   methods: {

@@ -119,7 +119,7 @@ export default {
     color: #bbb;
     text-decoration: line-through;
     position: absolute;
-    left: 140px;
+    left: 115px;
   }
   .num{
     color: #999;

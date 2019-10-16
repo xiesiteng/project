@@ -38,6 +38,14 @@ const subscribe = [
     meta: {
       title: '预约详情'
     }
+  },
+  {
+    path: '/subscribe/subscribeNow',
+    name: 'subscribeNow',
+    component: () => import('@/components/subscribe/subscribeNow'),
+    meta: {
+      title: '预约'
+    }
   }
 
 ]
