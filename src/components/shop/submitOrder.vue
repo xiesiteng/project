@@ -257,8 +257,8 @@ export default {
       this.radio = index
       console.log(this.dis_money)
     },
-    fmtTime(number,format) {
-
+    fmtTime (number,format) {
+      number = number * 1000
     // 毫秒级的时间戳转换
     var date = new Date(number)
     // var date = new Date();

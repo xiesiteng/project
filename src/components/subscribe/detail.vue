@@ -5,7 +5,7 @@
         <img src="../../../static/images/index/store.png" alt="">
         <span>门店地址</span>
       </div>
-      <div class="info-content">南山区华侨城 创意文化园北园A1栋首层114号</div>
+      <div class="info-content">{{store_address}}</div>
     </div>
 
     <div class="info-item">
@@ -13,7 +13,7 @@
         <img src="../../../static/images/index/time.png" alt="">
         <span>预约时间</span>
       </div>
-      <div class="info-content">08-03   后天  10:30</div>
+      <div class="info-content">{{month}}-{{day}}&nbsp;{{hour}}:{{minute}}</div>
     </div>
 
     <div class="info-item">
@@ -21,7 +21,7 @@
         <img src="../../../static/images/index/project.png" alt="">
         <span>预约项目</span>
       </div>
-      <div class="info-content">深沉清洁</div>
+      <div class="info-content">{{info.goods_name}}</div>
     </div>
 
     <div class="disc">
@@ -30,9 +30,9 @@
         <span>优惠券使用</span>
       </div>
       <p class="use" @click="chooseDiscount">
-        <span v-show="true">2张优惠券可用</span>
-        <span v-show="false">￥20元优惠券</span>
-        <span class="none" v-show="false">暂无优惠券</span>
+        <span v-show="!noDis && !disFlag">{{count}}张优惠券可用</span>
+        <span v-show="disFlag">￥{{dis_money}}元优惠券</span>
+        <span class="none" v-show="noDis">暂无优惠券</span>
         <img src="../../../static/images/index/more_small.png" alt="">
       </p>
     </div>
@@ -47,9 +47,9 @@
     <!--底部按钮-->
     <div class="settlement">
       <div class="total">
-        结算: <span>￥399.9</span>
+        结算: <span>￥{{total}}</span>
       </div>
-      <button class="btn">立即预约</button>
+      <button class="btn" @click="subscribe">立即预约</button>
     </div>
 
     <!--优惠券弹出层-->
@@ -60,18 +60,28 @@
       :style="{ height: '80%' }"
     >
       <div class="disc-wrap">
-        <div class="discount-item" v-for="(item, index) in 2" :key="index">
+        <div class="discount-item" v-for="(item, index) in disList" :key="index">
           <div class="dis-left">
-            <span>￥ <b>20</b></span>
+            <span>￥ <b>{{item.money}}</b></span>
             <p>优惠券</p>
           </div>
           <div class="dis-right">
-            <p>全场消费满100可用</p>
-            <span>2019-09-01前有效</span>
+            <p>全场消费满{{item.condition}}可用</p>
+            <span>{{fmtTime(item.use_end_time, 'Y-M-D')}}前有效</span>
           </div>
           <div class="dis-check">
-            <img src="../../../static/images/index/nocheck.png" alt="" v-show="!checked" @click="select">
-            <img src="../../../static/images/index/check.png" alt="" v-show="checked" @click="select">
+            <!--<img src="../../../static/images/index/nocheck.png" alt="" v-show="!checked" @click="select">
+            <img src="../../../static/images/index/check.png" alt="" v-show="checked" @click="select">-->
+            <van-radio-group v-model="radio">
+              <van-radio :name="index" @click="select(index)">
+
+                <img
+                  slot="icon"
+                  slot-scope="props"
+                  :src="props.checked ? activeIcon : inactiveIcon"
+                >
+              </van-radio>
+            </van-radio-group>
           </div>
         </div>
       </div>
@@ -81,27 +91,115 @@
 </template>
 
 <script>
-  export default {
-    name: "detail",
-    data () {
-      return{
-        txt: '',
-        showDis: false,
-        checked: false
+import axios from 'axios'
+export default {
+  name: "detail",
+  data () {
+    return{
+      radio: '1',
+      activeIcon: '../../../static/images/index/check.png',
+      inactiveIcon: '../../../static/images/index/nocheck.png',
+      noDis: false,
+      txt: '',
+      showDis: false,
+      checked: false,
+      goods_id: '',
+      info: {},
+      store_address: '',
+      year: '',
+      month: '',
+      day: '',
+      hour: '',
+      minute: '',
+      disList: [],
+      count: '',
+      dis_money: '',
+      dis_id: '',
+      disFlag: false
+    }
+  },
+  computed: {
+    total () {
+      return (this.info.goods_price - this.dis_money)
+    }
+  },
+  mounted () {
+    this.year = this.$route.query.year
+    this.month = this.$route.query.month
+    this.day = this.$route.query.day
+    this.hour = this.$route.query.hour
+    this.minute = this.$route.query.minute
+    // console.log(this.year + '-' + this.month + '-' + this.day + ' ' + this.hour + ':' + this.minute + ':00')
+    // 接收
+    this.goods_id = this.$route.query.goods_id
+    this.init()
+    this.getDis()
+  },
+  methods: {
+    init () {
+      axios.get('/lan/settlement_cart?goods_id=' + this.goods_id).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        this.info = res.data.data.cart_selected
+        this.store_address = res.data.data.extra.store_address
       }
     },
-    methods: {
-      chooseDiscount () {
-        this.showDis = true
-      },
-      pickItem () {
-        this.showDis = false
-      },
-      select () {
-        this.checked = !this.checked
+    getDis () {
+      axios.get('/lan/coupon_list?type=0').then(this.getDisSucc).catch(err => console.log(err))
+    },
+    getDisSucc (res) {
+      if (res.data.code == 2000) {
+        if (res.data.data.result.length == 0) {
+          this.noDis = true
+        } else {
+          this.count = res.data.data.count
+          this.disList = res.data.data.result
+
+        }
       }
+    },
+    chooseDiscount () {
+      this.showDis = true
+    },
+    pickItem () {
+      this.showDis = false
+      this.dis_money = this.disList[this.radio].money
+      this.dis_id = this.disList[this.radio].id
+      this.disFlag = true
+    },
+    select (index) {
+      // this.checked = !this.checked
+      this.radio = index
+    },
+    subscribe () {
+      let book_time = this.year + '-' + this.month + '-' + this.day + ' ' + this.hour + ':' + this.minute + ':00'
+      axios.get('/lan/order_add_cart?order_prop_type=3' + '&goods_id=' + this.goods_id + '&book_time=' + book_time + '&coupon_id=' + this.dis_id + '&user_note=' + this.txt).then(this.subscribeSucc).catch(err => console.log(err))
+    },
+    subscribeSucc (res) {
+
+    },
+    fmtTime(number,format) {
+      number = number * 1000
+      // 毫秒级的时间戳转换
+      var date = new Date(number)
+      // var date = new Date();
+      var Y = date.getFullYear();
+      var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+      var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
+      format=format.indexOf('M')>-1?format.replace('M',M):format;
+      format=format.indexOf('D')>-1?format.replace('D',D):format;
+      format=format.indexOf('h')>-1?format.replace('h',h):format;
+      format=format.indexOf('m')>-1?format.replace('m',m):format;
+      format=format.indexOf('s')>-1?format.replace('s',s):format;
+      return format;
     }
   }
+}
 </script>
 
 <style scoped>

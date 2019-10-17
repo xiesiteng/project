@@ -20,13 +20,13 @@
             <div class="tag-wrap">
               <p>剩余名额{{item.store_count}}个</p>
             </div>
-            <!--价格和拼团按钮-->
+            <!--价格和按钮-->
             <div class="price-wrap">
               <div class="include">
                 <em>￥</em>
                 <p class="price">{{item.shop_price}}</p>
               </div>
-              <img src="../../../static/images/index/coll_shop.png" alt="">
+              <img src="../../../static/images/index/coll_shop.png" alt="" @click="addtoCar(item.goods_id)">
             </div>
           </div>
         </div>
@@ -37,6 +37,7 @@
 
 <script>
 import axios from 'axios'
+import {Toast} from 'vant'
 export default {
   name: "collection",
   data () {
@@ -57,6 +58,16 @@ export default {
       this.collect_list = res.data.data.result
       if (this.collect_list.length == 0) {
         this.noCollect = true
+      }
+    },
+    addtoCar (goods_id) {
+      axios.get('/lan/add_cart?goods_id=' + goods_id).then(this.addtoCarSucc).catch(err => console.log(err))
+    },
+    addtoCarSucc (res) {
+      if (res.data.code == 2000) {
+        Toast('成功加入购物车')
+      } else {
+        Toast(res.data.data.msg)
       }
     }
   }

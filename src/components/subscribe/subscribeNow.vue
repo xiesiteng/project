@@ -32,7 +32,7 @@
         <div class="time">
           预约时间：<span>{{timeContent}}</span>
         </div>
-        <button class="btn" @click="buyNow">立即预约</button>
+        <button class="btn" @click="buyNow(info.goods_id)">立即预约</button>
       </div>
     </div>
 </template>
@@ -51,6 +51,7 @@ export default {
       currentDate: new Date(),
       goods_id: '',
       info: {},
+      year: '',
       month: '',
       day: '',
       hour: '',
@@ -76,19 +77,20 @@ export default {
     },
     change (e) {
       // console.log(e.getValues())
+      this.year = e.getValues()[0]
       this.month = e.getValues()[1]
       this.day = e.getValues()[2]
       this.hour = e.getValues()[3]
       this.minute = e.getValues()[4]
-      console.log(this.month, this.day, this.hour, this.minute)
+      console.log(this.year, this.month, this.day, this.hour, this.minute)
       this.timeContent = this.month + '-' + this.day + ' ' + this.hour + ':' + this.minute
     },
-    buyNow () {
+    buyNow (goods_id) {
       if (!this.timeContent) {
         Toast('请选择预约时间')
         return false
       }
-      this.$router.push({path: '/subscribe/detail'})
+      this.$router.push({path: '/subscribe/detail', query: {goods_id: goods_id, year: this.year, month: this.month, day: this.day, hour: this.hour, minute: this.minute}})
     },
 
     // filter(type, options) {

@@ -169,6 +169,15 @@
           </div>
           <!--四个活动end-->
         </div>
+      <!--遮罩-->
+      <div class="mask" v-show="showMask">
+        <div class="mask-content">
+          <div class="hasDis"></div>
+          <div class="close_btn">
+            <img src="../../../static/images/index/close_btn.png" alt="">
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -207,7 +216,8 @@ export default {
       endTime: '',
       group_goods: [],
       animate: false,
-      goods_category: []
+      goods_category: [],
+      showMask: true
     }
   },
   components: {
@@ -601,4 +611,24 @@ p
   text-overflow:ellipsis;
   white-space: nowrap;
   display flex
+.mask
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 1000;
+.mask-content
+  bottom: 50%;
+  transform: translateY(50%);
+.hasDis
+  width: 200px;
+  height: 281px;
+  margin: 0 auto;
+  background url("../../../static/images/index/index_dis.png")
+.close_btn
+  width 32px;
+  margin: 0 auto;
+  margin-top: 20px;
 </style>
