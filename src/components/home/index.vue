@@ -172,8 +172,21 @@
       <!--遮罩-->
       <div class="mask" v-show="showMask">
         <div class="mask-content">
-          <div class="hasDis"></div>
-          <div class="close_btn">
+          <div class="hasDis">
+            <p class="item-title" v-show="false">优惠券</p>
+            <p class="item-titleSucc">领取成功</p>
+            <div class="item-content" v-show="false">
+              <p class="item-disMoney"><span>20</span>元</p>
+              <p class="item-condition">全场满199使用</p>
+              <button class="item-get">立即领取</button>
+            </div>
+            
+            <div class="item-contentSucc" v-show="true">
+              <img src="../../../static/images/index/getDIs.png" alt="">
+              <button class="item-getSucc">快去逛逛</button>
+            </div>
+          </div>
+          <div class="close_btn" @click="closeMask">
             <img src="../../../static/images/index/close_btn.png" alt="">
           </div>
         </div>
@@ -225,6 +238,7 @@ export default {
   },
   mounted () {
     this.init()
+    this.getDis()
     // setInterval(this.showMarquee, 2000)
   },
   methods: {
@@ -285,6 +299,14 @@ export default {
     },
     toIntegralDetail (goods_id) {
       this.$router.push({path: '/integral/detail', query:{goods_id: goods_id}})
+    },
+    getDis () {
+      axios.get('/lan/preferential_activity').then(this.getDisSucc).catch(err => console.log(err))
+    },
+    getDisSucc (res) {},
+
+    closeMask () {
+      this.showMask = false
     },
 
     fmtTime(number,format) {
@@ -627,8 +649,65 @@ p
   height: 281px;
   margin: 0 auto;
   background url("../../../static/images/index/index_dis.png")
+  background-size 100% 100%
+  position relative
 .close_btn
   width 32px;
   margin: 0 auto;
   margin-top: 20px;
+.item-title
+  position absolute
+  top 57px
+  left 50%
+  transform translateX(-50%)
+  font-size 20px
+  color #333
+  font-family SourceHanSansSC-Medium
+.item-titleSucc
+  position absolute
+  top 57px
+  left 50%
+  transform translateX(-50%)
+  font-size 20px
+  color #DC3B0D
+  font-family SourceHanSansSC-Medium
+.item-content
+  position absolute
+  top 80px
+  left 50%
+  transform translateX(-50%)
+  display flex
+  flex-direction column
+  align-items center
+.item-contentSucc
+  position absolute
+  top 102px
+  left 50%
+  transform translateX(-50%)
+  display flex
+  flex-direction column
+  align-items center
+.item-disMoney
+  color #DC3B0D
+  font-size 24px
+  span
+    font-size 45px!important
+.item-condition
+  color #666666
+  padding-bottom 16px
+.item-get
+  width 98px
+  height 25px
+  border none
+  border-radius 10px
+  background-color #15B0AE
+  color #fff
+.item-getSucc
+  width 98px
+  height 25px
+  border none
+  border-radius 10px
+  background-color #15B0AE
+  color #fff
+  margin-top 20px
 </style>
