@@ -74,9 +74,7 @@ export default {
     uploadSucc (res) {
       // console.log(res.data)
       if (res.data.code == 2000) {
-        // console.log(this.list, this.lsit.length)
         this.list.push(res.data.data.url)
-        // console.log(this.list)
       }
     },
     deleteImage () {

@@ -30,12 +30,12 @@
             <img src="../../../static/images/index/notice.png" alt="" class="notice-icon">
             <span class="notice-title">公告</span>
             <van-swipe
-              style="height: 50px; width: 280px"
+              style="height: 50px; width: 240px"
               vertical
               :show-indicators="false"
               :touchable="false"
               :autoplay="3000">
-              <van-swipe-item  style="height: 50px" v-for="(item, index) in noticeList" :key="index">
+              <van-swipe-item  style="height: 50px;line-height: 50px;" v-for="(item, index) in noticeList" :key="index">
                 <p class="hid"><span>【{{item.title}}】</span> <span v-html="item.content"></span></p>
               </van-swipe-item>
 
@@ -173,18 +173,22 @@
       <div class="mask" v-show="showMask">
         <div class="mask-content">
           <div class="hasDis">
-            <p class="item-title" v-show="false">优惠券</p>
-            <p class="item-titleSucc">领取成功</p>
-            <div class="item-content" v-show="false">
-              <p class="item-disMoney"><span>20</span>元</p>
-              <p class="item-condition">全场满199使用</p>
-              <button class="item-get">立即领取</button>
+
+            <!--领取优惠券-->
+            <p class="item-title" v-show="!recDis">{{disInfo.name}}</p>
+            <div class="item-content" v-show="!recDis">
+              <p class="item-disMoney"><span>{{disInfo.money}}</span>元</p>
+              <p class="item-condition">全场满{{disInfo.condition}}使用</p>
+              <button class="item-get" @click="receive">立即领取</button>
             </div>
-            
-            <div class="item-contentSucc" v-show="true">
+
+            <!--领取成功start-->
+            <p class="item-titleSucc" v-show="recDis">领取成功</p>
+            <div class="item-contentSucc" v-show="recDis">
               <img src="../../../static/images/index/getDIs.png" alt="">
               <button class="item-getSucc">快去逛逛</button>
             </div>
+            <!--领取成功end-->
           </div>
           <div class="close_btn" @click="closeMask">
             <img src="../../../static/images/index/close_btn.png" alt="">
@@ -195,6 +199,7 @@
 </template>
 
 <script>
+import {Toast} from 'vant'
 import tabBar from '../common/tabbar'
 import axios from 'axios'
 export default {
@@ -230,7 +235,9 @@ export default {
       group_goods: [],
       animate: false,
       goods_category: [],
-      showMask: true
+      showMask: false,
+      disInfo: {},
+      recDis: false
     }
   },
   components: {
@@ -300,10 +307,30 @@ export default {
     toIntegralDetail (goods_id) {
       this.$router.push({path: '/integral/detail', query:{goods_id: goods_id}})
     },
+    // 是否有优惠券
     getDis () {
       axios.get('/lan/preferential_activity').then(this.getDisSucc).catch(err => console.log(err))
     },
-    getDisSucc (res) {},
+    getDisSucc (res) {
+      if (res.data.code == 2000) {
+        let result = res.data.data.list
+        if (result.length !== 0) {
+          this.showMask = true
+          this.disInfo = result
+        }
+      }
+    },
+    // 领取优惠券
+    receive () {
+      axios.get('/lan/receive_coupon').then(this.receiveSucc).catch(err => console.log(err))
+    },
+    receiveSucc (res) {
+      if (res.data.code == 2000) {
+        this.recDis = true
+      } else {
+        Toast(res.data.msg)
+      }
+    },
 
     closeMask () {
       this.showMask = false
@@ -673,7 +700,7 @@ p
   font-family SourceHanSansSC-Medium
 .item-content
   position absolute
-  top 80px
+  top 85px
   left 50%
   transform translateX(-50%)
   display flex
@@ -691,7 +718,7 @@ p
   color #DC3B0D
   font-size 24px
   span
-    font-size 45px!important
+    font-size 36px!important
 .item-condition
   color #666666
   padding-bottom 16px
@@ -711,3 +738,5 @@ p
   color #fff
   margin-top 20px
 </style>
+
+

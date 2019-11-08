@@ -46,6 +46,14 @@ const subscribe = [
     meta: {
       title: '预约'
     }
+  },
+  {
+    path: '/subscribe/success',
+    name: 'success',
+    component: () => import('@/components/subscribe/success'),
+    meta: {
+      title: '预约成功'
+    }
   }
 
 ]

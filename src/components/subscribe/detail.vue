@@ -177,7 +177,7 @@ export default {
       axios.get('/lan/order_add_cart?order_prop_type=3' + '&goods_id=' + this.goods_id + '&book_time=' + book_time + '&coupon_id=' + this.dis_id + '&user_note=' + this.txt).then(this.subscribeSucc).catch(err => console.log(err))
     },
     subscribeSucc (res) {
-
+      this.$router.push()
     },
     fmtTime(number,format) {
       number = number * 1000

@@ -60,20 +60,20 @@ export default {
       return {
         active: 0,
         icon1: {
-          normal: '../../static/images/tabbar/index.png',
-          active: '../../static/images/tabbar/index_sel.png'
+          normal: require('../../../static/images/tabbar/index.png'),
+          active: require('../../../static/images/tabbar/index_sel.png')
         },
         icon2: {
-          normal: '../../static/images/tabbar/subscribe.png',
-          active: '../../static/images/tabbar/subscribe_sel.png'
+          normal: require('../../../static/images/tabbar/subscribe.png'),
+          active: require('../../../static/images/tabbar/subscribe_sel.png')
         },
         icon3: {
-          normal: '../../static/images/tabbar/shop.png',
-          active: '../../static/images/tabbar/shop_sel.png'
+          normal: require('../../../static/images/tabbar/shop.png'),
+          active: require('../../../static/images/tabbar/shop_sel.png')
         },
         icon4: {
-          normal: '../../static/images/tabbar/mine.png',
-          active: '../../static/images/tabbar/mine_sel.png'
+          normal: require('../../../static/images/tabbar/mine.png'),
+          active: require('../../../static/images/tabbar/mine_sel.png')
         }
       }
     }
