@@ -64,6 +64,10 @@ export default {
         Toast('密码不能为空')
         return false
       }
+      if(!(/^1[3456789]\d{9}$/.test(this.phone))) {
+        Toast('请输入正确的手机号码')
+        return false
+      }
       axios.get('/lan/forget_password?mobile=' + this.phone + '&code=' + this.code + '&password=' + this.password).then(this.verfitySucc).catch(err => console.log(err))
     },
     verfitySucc (res) {

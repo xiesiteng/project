@@ -85,8 +85,12 @@
       </div>
       <!--按钮-->
       <div class="button-group">
-        <button>查看物流</button>
-        <button>确认收货</button>
+        <button class="btn1" @click.stop="cancelOrder(info.order_id)" v-show="info.order_status == 0 || info.order_status == 1">取消订单</button>
+        <button class="btn1" @click.stop="scanLog(info.order_id)" v-show="info.order_status == 2">查看物流</button>
+        <button class="btn2" @click.stop="send" v-show="info.order_status == 1">提醒发货</button>
+        <button class="btn2" @click.stop="toPay(info.order_id)" v-show="info.order_status == 0">去付款</button>
+        <button class="btn2" @click.stop="recive(info.order_id)" v-show="info.order_status == 2">确认收货</button>
+        <button class="btn2" @click.stop="evaluate(info.order_id)" v-show="info.order_status == 3">评价</button>
       </div>
     </div>
 </template>
@@ -114,7 +118,41 @@ export default {
       // console.log(res.data.data)
       this.info = res.data.data
       this.order_goods = res.data.data.order_goods
+    },
+    cancelOrder (order_id) {
+      axios.get('/lan/order_cancel?order_id=' + order_id).then(this.cancelOrderSucc).catch(err => console.log(err))
+    },
+    cancelOrderSucc (res) {
+      if (res.data.code == 2000) {
+        this.init()
+      }
+    },
+    toPay (order_id) {
+      axios.get('/lan/quickly_pay?order_id=' + order_id).then(this.paySucc).catch(err => console.log(err))
+    },
+    paySucc (res) {
+
+    },
+    recive (order_id) {
+      axios.get('/lan/order_finish?order_id=' + order_id).then(this.reciveSucc).catch(err => console.log(err))
+    },
+    reciveSucc (res) {
+      if (res.data.code == 2000) {
+        this.init()
+      }
+    },
+    evaluate (order_id) {
+      this.$router.push({path: '/person/evaluate'})
+      // this.$router.push({path: '/person/evaluate', query: {order_id: order_id}})
+    },
+    scanLog (order_id) {
+      this.$router.push({path: '/person/logistics'})
+      // this.$router.push({path: '/person/logistics', query: {order_id: order_id}})
+    },
+    send () {
+      Toast('提醒卖家发货发送消息成功')
     }
+
   }
 }
 </script>
@@ -239,7 +277,7 @@ export default {
     padding: 15px 15px 35px 15px;
     box-sizing: border-box;
   }
-  .button-group button:nth-child(1) {
+  .btn1 {
     width: 85px;
     height: 27px;
     background-color: #fff;
@@ -248,7 +286,7 @@ export default {
     font-size: 13px;
     border: 1px solid #EEEEEE;
   }
-  .button-group button:nth-child(2) {
+  .btn2 {
     width: 85px;
     height: 27px;
     background-color: #15B0AE;

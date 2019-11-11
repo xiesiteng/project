@@ -46,6 +46,14 @@ const assemble = [
     meta: {
       title: '我的拼团'
     }
+  },
+  {
+    path: '/assemble/joinGroup',
+    name: 'joinGroup',
+    component: () => import('@/components/assemble/joinGroup'),
+    meta: {
+      title: '拼团列表'
+    }
   }
 
 ]

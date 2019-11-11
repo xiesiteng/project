@@ -59,7 +59,11 @@ export default {
         return false
       }
       if (!this.phone) {
-        Toast('请输入输入手机号码')
+        Toast('请输入手机号码')
+        return false
+      }
+      if(!(/^1[3456789]\d{9}$/.test(this.phone))) {
+        Toast('请输入正确的手机号码')
         return false
       }
       axios.get('/lan/register?admin=' + this.username + '&password=' + this.password + '&mobile=' + this.phone).then(this.rigSucc).catch(err => console.log(err))

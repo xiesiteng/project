@@ -15,25 +15,25 @@
 
       <!--订单信息-->
       <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore" v-show="!noProduct">
-        <div class="order-info" v-for="(item, index) in 5" :key="index">
+        <div class="order-info" v-for="(item, index) in list" :key="index">
           <div class="orderNum">
-            <p>订单编号：20190801001</p>
-            <span>待付款</span>
+            <p>订单编号：{{item.order_sn}}</p>
+            <span>{{item.order_status_name}}</span>
           </div>
-          <div class="info" @click="toDetail">
+          <div class="info" @click="toDetail(item.order_id)">
             <div class="info-left">
-              <img src="../../../static/images/index/gznf.png" alt="" class="size">
+              <img :src="item.goods.original_img" alt="" class="size">
             </div>
             <div class="info-right">
-              <p class="title">光子嫩肤</p>
-              <p class="time">预约时间：2019-08-01  10:30am</p>
+              <p class="title">{{item.goods.goods_name}}</p>
+              <p class="time">预约时间：{{item.add_time}}</p>
               <div class="button-group">
-                <button class="btn1" @click.stop="cancelOrder" v-show="false">取消订单</button>
-                <button class="btn1" @click.stop="scanLog" v-show="true">查看物流</button>
-                <button class="btn2" @click.stop="send" v-show="false">提醒发货</button>
-                <button class="btn2" @click.stop="toPay" v-show="false">去付款</button>
-                <button class="btn2" @click.stop="recive" v-show="false">确认收货</button>
-                <button class="btn2" @click.stop="evaluate" v-show="true">评价</button>
+                <button class="btn1" @click.stop="cancelOrder(item.order_id)" v-show="item.order_status == 0 || item.order_status == 1">取消订单</button>
+                <button class="btn1" @click.stop="scanLog(item.order_id)" v-show="item.order_status == 2">查看物流</button>
+                <button class="btn2" @click.stop="send" v-show="item.order_status == 1">提醒发货</button>
+                <button class="btn2" @click.stop="toPay(item.order_id)" v-show="item.order_status == 0">去付款</button>
+                <button class="btn2" @click.stop="recive(item.order_id)" v-show="item.order_status == 2">确认收货</button>
+                <button class="btn2" @click.stop="evaluate(item.order_id)" v-show="item.order_status == 3">评价</button>
               </div>
             </div>
           </div>
@@ -138,8 +138,8 @@ export default {
       }, 200)
     },
     toDetail (order_id) {
-      this.$router.push({path: '/person/orderDetail'})
-      // this.$router.push({path: '/person/orderDetail', query: {order_id: order_id}})
+      // this.$router.push({path: '/person/orderDetail'})
+      this.$router.push({path: '/person/orderDetail', query: {order_id: order_id}})
     },
     cancelOrder (order_id) {
       axios.get('/lan/order_cancel?order_id=' + order_id).then(this.cancelOrderSucc).catch(err => console.log(err))
@@ -159,7 +159,9 @@ export default {
       axios.get('/lan/order_finish?order_id=' + order_id).then(this.reciveSucc).catch(err => console.log(err))
     },
     reciveSucc (res) {
-
+      if (res.data.code == 2000) {
+        this.init()
+      }
     },
     evaluate (order_id) {
       this.$router.push({path: '/person/evaluate'})
@@ -168,7 +170,9 @@ export default {
     scanLog (order_id) {
       this.$router.push({path: '/person/logistics'})
       // this.$router.push({path: '/person/logistics', query: {order_id: order_id}})
-    }
+    },
+
+
   }
 }
 </script>

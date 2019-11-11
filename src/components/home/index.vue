@@ -230,7 +230,6 @@ export default {
       ],
       active: 2,
       time: 0,
-      // time: 10 * 60 * 60 * 1000,
       endTime: '',
       group_goods: [],
       animate: false,
@@ -338,6 +337,7 @@ export default {
 
     fmtTime(number,format) {
       // 毫秒级的时间戳转换
+      number = number * 1000
       var date = new Date(number)
       // var date = new Date();
       var Y = date.getFullYear();

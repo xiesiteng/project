@@ -3,67 +3,113 @@
       <div class="nav-wrap">
         <ul class="nav">
           <!--<li v-for="(item, index) in navList" :key="index" :class="[active == index ? 'nav-active' : '']" @click="choose(index)">{{item}}</li>-->
-          <li :class="[active == 1 ? 'nav-active' : '']" @click="choose(1)">拼团中</li>
-          <li :class="[active == 2 ? 'nav-active' : '']" @click="choose(2)">已完成</li>
+          <li :class="[active == 0 ? 'nav-active' : '']" @click="choose(0)">拼团中</li>
+          <li :class="[active == 1 ? 'nav-active' : '']" @click="choose(1)">已完成</li>
         </ul>
       </div>
       <!--正在拼团的拼团内容-->
-      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 1">
-        <div class="orderNum">
-          <p>2019-08-01  10:58:32</p>
-          <span>拼团中</span>
-        </div>
-        <div class="info" @click="toAssem">
-          <div class="info-left">
-            <img src="../../../static/images/index/gznf.png" alt="" class="size">
+      <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore" v-show="active == 0">
+        <div class="order-info" v-for="(item, index) in list" :key="index" >
+          <div class="orderNum">
+            <p>{{item.add_time}}</p>
+            <span>{{item.status_name}}</span>
           </div>
-          <div class="info-right">
-            <p class="title">光子嫩肤</p>
-            <p class="time">￥399.9</p>
-            <div class="button-group">
-              <button>去邀请</button>
+          <div class="info" @click="toAssem(item.id)">
+            <div class="info-left">
+              <img :src="item.original_img" alt="" class="size">
+            </div>
+            <div class="info-right">
+              <p class="title">{{item.goods_name}}</p>
+              <p class="time">￥{{item.goods_price}}</p>
+              <div class="button-group">
+                <button>去邀请</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </scroll>
       <!--已完成的拼团-->
-      <div class="order-info" v-for="(item, index) in 3" :key="index" v-show="active == 2">
-        <div class="orderNum">
-          <p>2019-08-01  10:58:32</p>
-          <span>拼团成功</span>
-        </div>
-        <div class="info">
-          <div class="info-left">
-            <img src="../../../static/images/index/gznf.png" alt="" class="size">
+      <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore" v-show="active == 1">
+        <div class="order-info" v-for="(item, index) in list" :key="index" >
+          <div class="orderNum">
+            <p>{{item.add_time}}</p>
+            <span>{{item.status_name}}</span>
           </div>
-          <div class="info-right">
-            <p class="title">光子嫩肤</p>
-            <p class="time">￥399.9</p>
-            <div class="button-group">
-              <button>立即预约</button>
+          <div class="info">
+            <div class="info-left">
+              <img :src="item.original_img" alt="" class="size">
+            </div>
+            <div class="info-right">
+              <p class="title">{{item.goods_name}}</p>
+              <p class="time">￥{{item.goods_price}}</p>
+              <div class="button-group">
+                <button>立即预约</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </scroll>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import {Toast} from 'vant'
+import scroll from '../common/scroll'
 export default {
   name: "myAssemble",
   data () {
     return{
       active: 1,
-      navList: ['拼团中', '已结束']
+      navList: ['拼团中', '已结束'],
+      page: 1,
+      enableLoadMore: true,
+      list: []
     }
+  },
+  components:{
+    scroll
+  },
+  mounted () {
+    // this.init()
+    this.choose(0)
   },
   methods: {
     choose (val) {
       this.active = val
+      this.page = 1
+      this.enableLoadMore = true
+      this.list = []
+      this.init()
     },
-    toAssem () {
-      this.$router.push('/assemble/onAssemble')
+    toAssem (id) {
+      this.$router.push({path: '/assemble/onAssemble', query: {id: id}})
+    },
+    init () {
+      axios.get('/lan/group_own?page=' + this.page + '&status=' + this.active).then(this.initSucc).catch(err => console.log(err))
+    },
+    initSucc (res) {
+      if (res.data.code == 2000) {
+        if (res.data.data.length == 0) {
+          this.enableLoadMore = false
+          return false
+        }
+        this.list = this.list.concat(res.data.data)
+      } else {
+        Toast(res.data.msg)
+      }
+    },
+    onLoadMore(done) {
+      setTimeout(()=>{
+        if(!this.enableLoadMore) {
+          return false
+        }
+        this.page++
+        this.init()
+        done();
+      }, 200)
     }
+
   }
 }
 </script>
