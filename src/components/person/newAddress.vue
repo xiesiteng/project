@@ -137,9 +137,14 @@ export default {
     addSucc (res) {
       console.log(res.data)
       if (res.data.code == 2000) {
-        this.$router.push('/person/mineAddress')
+        if (this.$route.query.fromOrder) {
+          this.$router.push('/shop/submitOrder')
+        } else {
+          this.$router.push('/person/mineAddress')
+        }
       }
     }
+
   }
 }
 </script>

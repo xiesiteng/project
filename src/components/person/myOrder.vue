@@ -147,6 +147,8 @@ export default {
     cancelOrderSucc (res) {
       if (res.data.code == 2000) {
         this.init()
+      } else {
+        Toast(res.data.msg)
       }
     },
     toPay (order_id) {
@@ -161,6 +163,8 @@ export default {
     reciveSucc (res) {
       if (res.data.code == 2000) {
         this.init()
+      } else {
+        Toast(res.data.msg)
       }
     },
     evaluate (order_id) {

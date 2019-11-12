@@ -1,5 +1,8 @@
 <template>
     <div>
+      <!--没有优惠券-->
+      <div class="thereNo" v-if="disList.length == 0">这里什么也没有~</div>
+      <!--没有优惠券end-->
       <div class="main">
         <div class="discount" v-for="(item, index) in disList" :key="index">
           <img src="../../../static/images/index/disc.png" alt="" class="bg">
@@ -92,5 +95,12 @@ export default {
   .dis-right span{
     color: #999;
     font-size: 12px;
+  }
+  .thereNo{
+    font-size: 18px;
+    color: #999;
+    display: flex;
+    justify-content: center;
+    margin-top: 90px;
   }
 </style>

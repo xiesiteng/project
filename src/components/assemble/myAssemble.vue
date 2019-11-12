@@ -22,7 +22,7 @@
               <p class="title">{{item.goods_name}}</p>
               <p class="time">￥{{item.goods_price}}</p>
               <div class="button-group">
-                <button>去邀请</button>
+                <button class="over-btn">去邀请</button>
               </div>
             </div>
           </div>
@@ -35,7 +35,7 @@
             <p>{{item.add_time}}</p>
             <span>{{item.status_name}}</span>
           </div>
-          <div class="info">
+          <div class="info" @click="toassDetail(item.id, item.status_name)">
             <div class="info-left">
               <img :src="item.original_img" alt="" class="size">
             </div>
@@ -43,7 +43,8 @@
               <p class="title">{{item.goods_name}}</p>
               <p class="time">￥{{item.goods_price}}</p>
               <div class="button-group">
-                <button>立即预约</button>
+                <!--<button class="over-btn" @click="subNow">立即预约</button>-->
+                <button class="over-btn" v-show="item.status_name == '拼团失败'" @click="moreAss">更多拼团</button>
               </div>
             </div>
           </div>
@@ -108,6 +109,18 @@ export default {
         this.init()
         done();
       }, 200)
+    },
+    // 已完成的拼团跳转详情
+    toassDetail (id, status_name) {
+      if (status_name == '拼团成功') {
+        this.$router.push({path: '/assemble/assSucc', query: {id: id}})
+      } else {
+        this.$router.push({path: '/assemble/assFail', query: {id: id}})
+      }
+    },
+    // 更多拼团
+    moreAss () {
+      this.$router.push('/assemble/assemble')
     }
 
   }
@@ -191,7 +204,7 @@ export default {
     box-sizing: border-box;
     padding: 15px 0;
   }
-  .button-group button{
+  .over-btn{
     width: 70px;
     height: 28px;
     line-height: 28px;

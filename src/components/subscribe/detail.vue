@@ -160,7 +160,9 @@ export default {
       }
     },
     chooseDiscount () {
-      this.showDis = true
+      if (!this.noDis) {
+        this.showDis = true
+      }
     },
     pickItem () {
       this.showDis = false

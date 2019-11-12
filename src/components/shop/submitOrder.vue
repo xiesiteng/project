@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="user-header" @click="chooseAddress">
+      <div class="user-header" @click="chooseAddress" v-if="addressList.length !== 0">
         <div class="wrap">
           <img src="../../../static/images/index/coordinates.png" alt="">
           <div class="user-wrap">
@@ -10,6 +10,14 @@
             </div>
             <div>{{recInfo.province}}{{recInfo.city}}{{recInfo.district}}{{recInfo.address}}</div>
           </div>
+        </div>
+        <img src="../../../static/images/index/more_small.png" alt="">
+      </div>
+      <!--没有地址信息-->
+      <div v-else class="emptyAddress" @click="toAddNewAddress">
+        <div class="emp-wrap">
+          <img src="../../../static/images/index/coordinates.png" alt="">
+          <span>您还未添加收货地址信息</span>
         </div>
         <img src="../../../static/images/index/more_small.png" alt="">
       </div>
@@ -102,7 +110,7 @@
             </div>
             <div class="dis-right">
               <p>全场消费满{{item.condition}}可用</p>
-              <span>{{fmtTime(item.use_end_time, 'Y-M-D')}}前有效</span>
+              <span>{{this.fmtTime(item.use_end_time, 'Y-M-D')}}前有效</span>
             </div>
             <div class="dis-check">
               <!--<img src="../../../static/images/index/nocheck.png" alt="" v-show="!item.flag" @click="select(index)">
@@ -195,6 +203,7 @@ export default {
       if (res.data.code == 2000) {
         if (res.data.data.result.length == 0) {
           this.noDis = true
+          console.log(this.noDis, this.disFlag)
         } else {
           this.count = res.data.data.count
           this.disList = res.data.data.result
@@ -257,25 +266,9 @@ export default {
       this.radio = index
       console.log(this.dis_money)
     },
-    fmtTime (number,format) {
-      number = number * 1000
-    // 毫秒级的时间戳转换
-    var date = new Date(number)
-    // var date = new Date();
-    var Y = date.getFullYear();
-    var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
-    var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-    var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
-    var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-    var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-    format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
-    format=format.indexOf('M')>-1?format.replace('M',M):format;
-    format=format.indexOf('D')>-1?format.replace('D',D):format;
-    format=format.indexOf('h')>-1?format.replace('h',h):format;
-    format=format.indexOf('m')>-1?format.replace('m',m):format;
-    format=format.indexOf('s')>-1?format.replace('s',s):format;
-    return format;
-  }
+    toAddNewAddress () {
+      this.$router.push({path: '/person/newAddress', query: {fromOrder: true}})
+    }
 
 
   }
@@ -530,5 +523,20 @@ export default {
     background-color: #15B0AE;
     position: fixed;
     bottom: 0;
+  }
+  .emptyAddress{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 20px 15px;
+  }
+  .emp-wrap{
+    display: flex;
+    align-items: center;
+  }
+  .emptyAddress span{
+    margin-left: 10px;
+    color: #999;
   }
 </style>

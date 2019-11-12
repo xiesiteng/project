@@ -34,7 +34,7 @@
           </div>
         </div>
         <!--退出账号-->
-        <div class="out">退出账号</div>
+        <div class="out" @click="loginOut">退出账号</div>
       </div>
     </div>
 </template>
@@ -63,7 +63,18 @@ export default {
      },
      getInfoSucc (res) {
        this.info = res.data.data
+     },
+     // 退出登录
+     loginOut () {
+       axios.get('/lan/login_out').then(this.outSucc).catch(err => console.log(err))
+     },
+     outSucc (res) {
+       if (res.data.code == 2000) {
+         localStorage.removeItem("token")
+         this.$router.push('/login/login')
+       }
      }
+
    }
   }
 </script>

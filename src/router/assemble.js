@@ -48,6 +48,22 @@ const assemble = [
     }
   },
   {
+    path: '/assemble/assSucc',
+    name: 'assSucc',
+    component: () => import('@/components/assemble/assSucc'),
+    meta: {
+      title: '拼团成功'
+    }
+  },
+  {
+    path: '/assemble/assFail',
+    name: 'assFail',
+    component: () => import('@/components/assemble/assFail'),
+    meta: {
+      title: '拼团失败'
+    }
+  },
+  {
     path: '/assemble/joinGroup',
     name: 'joinGroup',
     component: () => import('@/components/assemble/joinGroup'),

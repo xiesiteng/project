@@ -26,6 +26,7 @@
         <van-uploader
           v-model="fileList"
           multiple
+          :deletable="deletable"
           :max-count="4"
           :after-read="afterRead"
           @delete="deleteImage"
@@ -53,7 +54,8 @@ export default {
       fileList: [],
       txt: '',
       order_id: '',
-      list: []
+      list: [],
+      deletable: true
     }
   },
   mounted () {
@@ -65,11 +67,12 @@ export default {
     },
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      // console.log(file.content);
-      let params = {
-        name: file.content
-      }
-      axios.post('/lan/upload_img', params).then(this.uploadSucc).catch(err => console.log(err))
+      console.log(file.content);
+      this.list.push(file.content)
+      // let params = {
+      //   name: file.content
+      // }
+      // axios.post('/lan/upload_img', params).then(this.uploadSucc).catch(err => console.log(err))
     },
     uploadSucc (res) {
       // console.log(res.data)
@@ -77,8 +80,8 @@ export default {
         this.list.push(res.data.data.url)
       }
     },
-    deleteImage () {
-      console.log(111, this.$refs.uploader)
+    deleteImage (e) {
+      console.log(111, e)
     },
     submit () {
       if (this.active == 0) {

@@ -13,7 +13,7 @@
       <!--倒计时-->
       <div class="count">
         
-        <p class="count-title" v-show="true">
+        <p class="count-title" v-show="showTime">
           剩余
           <van-count-down
             :time="time"
@@ -97,7 +97,10 @@ export default {
       id: '', // 拼团id
       info: {},
       group_user: [],
-      shareUrl: 'http://ymm.molonglan.top/public/dist/assemble/joinGroup'
+      shareUrl: 'http://ymm.molonglan.top/public/dist/assemble/joinGroup',
+      showTime: true,
+      // assSucc: false,
+      // assFail: false
     }
   },
   mounted () {
@@ -106,7 +109,13 @@ export default {
   },
   methods: {
     finish () {
-      console.log(111)
+      // console.log(111)
+      // this.showTime = false
+      // if (this.group_user.length == 3) {
+      //   this.assSucc = true
+      // } else {
+      //   this.assFail = true
+      // }
     },
     init () {
       axios.get('/lan/group_detail?id=' + this.id).then(this.initSucc).catch(err => console.log(err))

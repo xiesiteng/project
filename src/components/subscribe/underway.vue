@@ -29,8 +29,8 @@
         <img src="../../../static/images/index/dis.png" alt="">
         <span>优惠券使用</span>
       </div>
-      <p class="use" v-show="info.coupon_price !== 0">￥{{info.coupon_price}}元优惠券</p>
-      <p class="noUse" v-show="info.coupon_price == 0">未使用优惠券</p>
+      <p class="use" v-show="info.coupon_price !== '0.00'">￥{{info.coupon_price}}元优惠券</p>
+      <p class="noUse" v-show="info.coupon_price == '0.00'">未使用优惠券</p>
     </div>
 
     <div class="message">

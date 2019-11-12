@@ -33,6 +33,10 @@
             <p>搜索到{{count}}个结果</p>
           </div>
           <!--搜索结果-->
+          <div class="noRes-wrap" v-show="flag && list.length == 0">
+            <img src="../../../static/images/index/no_res.png" alt="" class="noRes">
+            <p class="noPro">暂时还没有这个商品哦~</p>
+          </div>
           <!--商品信息start-->
           <!--<van-list
             v-model="loading"
@@ -40,7 +44,7 @@
             finished-text="没有更多了"
             @load="onLoad"
           >-->
-          <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore">
+          <scroll :onLoadMore="onLoadMore" :enableLoadMore="enableLoadMore" :noText="noText">
               <div class="box-wrap">
                 <div class="box" v-for="(item, index) in list" :key="index" @click="toDetail(item.goods_id)">
                   <!--多套一层div给border-->
@@ -127,6 +131,7 @@ export default {
         tagList: [],
         flag: false,
         count: '',
+        noText: false, // 控制scroll组件中的文字不显示
         clear_flag: false // 从第一个搜索框到第二个搜索框变true控制搜索时把list清空，搜索完变为false防止下拉时再次被清空
       }
     },
@@ -192,6 +197,7 @@ export default {
         this.enableLoadMore = true
         if (res.data.data.list.length == 0) {
           this.enableLoadMore = false
+          this.noText = true
           // return false
         }
         if (this.clear_flag) {
@@ -302,10 +308,7 @@ export default {
     toDetail (goods_id) {
       this.$router.push({path: '/shop/detail', query: {goods_id: goods_id}})
     },
-    getItem () {
-      let obj = {name: '美白再生因子深沉抗皱++', price: '399.99'}
-      this.list.push(obj)
-    },
+    // 下拉加载更多
     onLoadMore(done) {
       setTimeout(()=>{
         if(!this.enableLoadMore) {
@@ -472,5 +475,21 @@ export default {
     border: 1px solid #eee;
     box-sizing: border-box;
     padding-left: 10%;
+  }
+  .noRes-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 90px;
+  }
+  .noRes{
+    width: 176px;
+    height: 102px;
+    margin-bottom: 25px;
+  }
+  .noPro{
+    font-size: 14px;
+    color: #999;
   }
 </style>
