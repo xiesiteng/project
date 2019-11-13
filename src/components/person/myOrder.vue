@@ -168,12 +168,12 @@ export default {
       }
     },
     evaluate (order_id) {
-      this.$router.push({path: '/person/evaluate'})
-      // this.$router.push({path: '/person/evaluate', query: {order_id: order_id}})
+      // this.$router.push({path: '/person/evaluate'})
+      this.$router.push({path: '/person/evaluate', query: {order_id: order_id}})
     },
     scanLog (order_id) {
-      this.$router.push({path: '/person/logistics'})
-      // this.$router.push({path: '/person/logistics', query: {order_id: order_id}})
+      // this.$router.push({path: '/person/logistics'})
+      this.$router.push({path: '/person/logistics', query: {order_id: order_id}})
     },
 
 
@@ -287,7 +287,7 @@ export default {
   }
   .btn1 {
     border: none;
-    width: 70px;
+    width: 85px;
     height: 28px;
     font-size: 13px;
     background-color: #fff;
@@ -298,7 +298,7 @@ export default {
   }
   .btn2 {
     border: none;
-    width: 70px;
+    width: 85px;
     height: 28px;
     font-size: 13px;
     background-color: #fff;

@@ -34,7 +34,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   // 部署到服务器加上base解决空白页
-  base: '/public/dist/',
+  base: '/dist/',
   routes: [
     {
       path: '/',

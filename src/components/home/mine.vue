@@ -70,28 +70,28 @@
         <div class="activity">
           <div class="act-item" @click="toshopCar">
             <div>
-              <img src="../../../static/images/index/shopCar.png" alt="">
+              <img src="../../../static/images/index/shopCar.png" alt="" class="smallSize">
               <span>购物车</span>
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
           <div class="act-item" @click="tomySubscribe">
             <div>
-              <img src="../../../static/images/index/order.png" alt="">
+              <img src="../../../static/images/index/order.png" alt="" class="smallSize">
               <span>我的预约</span>
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
           <div class="act-item" @click="toExchange">
             <div>
-              <img src="../../../static/images/index/dui.png" alt="">
+              <img src="../../../static/images/index/dui.png" alt="" class="smallSize">
               <span>我的兑换</span>
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
           </div>
           <div class="act-item" @click="tomyAssemble">
             <div>
-              <img src="../../../static/images/index/minePing.png" alt="">
+              <img src="../../../static/images/index/minePing.png" alt="" class="smallSize">
               <span>我的拼团</span>
             </div>
             <img src="../../../static/images/index/more.png" alt="" class="more">
@@ -291,5 +291,9 @@ export default {
     font-size: 14px;
     padding-left: 15px;
     box-sizing: border-box;
+  }
+  .smallSize{
+    width: 16px;
+    height: 16px;
   }
 </style>

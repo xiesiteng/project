@@ -267,7 +267,7 @@ export default {
       console.log(this.dis_money)
     },
     toAddNewAddress () {
-      this.$router.push({path: '/person/newAddress', query: {fromOrder: true}})
+      this.$router.push({path: '/person/newAddress', query: {fromOrder: true, goods_id: this.goods_id}})
     }
 
 

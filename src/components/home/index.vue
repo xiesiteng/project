@@ -36,7 +36,9 @@
               :touchable="false"
               :autoplay="3000">
               <van-swipe-item  style="height: 50px;line-height: 50px;" v-for="(item, index) in noticeList" :key="index">
-                <p class="hid"><span>【{{item.title}}】</span> <span v-html="item.content" ></span></p>
+                <div class="hid">
+                <p>【{{item.title}}】</p> <p v-html="item.content" ></p>
+                </div>
               </van-swipe-item>
 
               <div class="custom-indicator" slot="indicator">
@@ -655,7 +657,8 @@ p
           color #666
 
 .hid
-  width 100%
+  width 100%;
+  height: 50px;
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;

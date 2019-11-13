@@ -16,7 +16,7 @@
 
             <div class="password">
               <img src="../../../static/images/index/password.png" alt="">
-              <input type="password" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave">
+              <input type="password" placeholder="请输入密码" class="userInput" v-model="password" @blur="leave" @keyup.enter="Login">
             </div>
 
             <button class="forget" @click="toForget">忘记密码>></button>

@@ -42,10 +42,10 @@
       <span>捎句话</span>
     </div>
     <div class="textarea-wrap">
-      <textarea name="" id="" cols="30" rows="6" class="mess-content" v-model="txt" placeholder="可填写偏好或要求，不超过200字" maxlength="200"></textarea>
+      <textarea name="" id="" cols="30" rows="6" class="mess-content" ref="text" v-model="txt" placeholder="可填写偏好或要求，不超过200字" maxlength="200" @blur="leave"></textarea>
     </div>
     <!--底部按钮-->
-    <div class="settlement">
+    <div class="settlement" v-show="hidshow">
       <div class="total">
         结算: <span>￥{{total}}</span>
       </div>
@@ -115,7 +115,9 @@ export default {
       count: '',
       dis_money: '',
       dis_id: '',
-      disFlag: false
+      disFlag: false,
+      hidshow:true,  //显示或者隐藏footer,
+
     }
   },
   computed: {
@@ -123,19 +125,35 @@ export default {
       return (this.info.goods_price - this.dis_money)
     }
   },
+
   mounted () {
+    // 监听页面高度的变化
+    const ua = window.navigator.userAgent;
+    if (ua.indexOf('Android') > -1 || ua.indexOf('iPhone') > -1) {
+      const docmHeight = document.body.clientHeight;// 默认屏幕高度
+      window.onresize = () => {
+        var nowHeight = document.body.clientHeight;// 实时屏幕高度
+        if (docmHeight !== nowHeight) {
+          this.hidshow = false;
+        } else {
+          this.hidshow = true;
+        }
+      };
+    }
+
     this.year = this.$route.query.year
     this.month = this.$route.query.month
     this.day = this.$route.query.day
     this.hour = this.$route.query.hour
     this.minute = this.$route.query.minute
-    // console.log(this.year + '-' + this.month + '-' + this.day + ' ' + this.hour + ':' + this.minute + ':00')
     // 接收
     this.goods_id = this.$route.query.goods_id
     this.init()
     this.getDis()
+
   },
   methods: {
+
     init () {
       axios.get('/lan/settlement_cart?goods_id=' + this.goods_id).then(this.initSucc).catch(err => console.log(err))
     },
@@ -181,25 +199,19 @@ export default {
     subscribeSucc (res) {
       this.$router.push()
     },
-    fmtTime(number,format) {
-      number = number * 1000
-      // 毫秒级的时间戳转换
-      var date = new Date(number)
-      // var date = new Date();
-      var Y = date.getFullYear();
-      var M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
-      var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-      var h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
-      var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-      var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-      format=format.indexOf('Y')>-1?format.replace('Y',Y):format;
-      format=format.indexOf('M')>-1?format.replace('M',M):format;
-      format=format.indexOf('D')>-1?format.replace('D',D):format;
-      format=format.indexOf('h')>-1?format.replace('h',h):format;
-      format=format.indexOf('m')>-1?format.replace('m',m):format;
-      format=format.indexOf('s')>-1?format.replace('s',s):format;
-      return format;
-    }
+    leave() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    },
+    // input_click: function(e) {
+    //   this.bottom_tip = false;
+    // },
+    // input_blur(){
+    //   setTimeout(()=> {
+    //     this.bottom_tip = true;
+    //   }, 300);
+    //   // console.log('失去焦点事件')
+    // }
+
   }
 }
 </script>
@@ -263,6 +275,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 50px;
+    background: #fff;
   }
   .btn{
     width: 40%;

@@ -55,7 +55,8 @@ export default {
       txt: '',
       order_id: '',
       list: [],
-      deletable: true
+      deletable: true,
+      twice: true // 节阀流
     }
   },
   mounted () {
@@ -67,44 +68,62 @@ export default {
     },
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      console.log(file.content);
+      // console.log(file.content);
       this.list.push(file.content)
-      // let params = {
-      //   name: file.content
-      // }
-      // axios.post('/lan/upload_img', params).then(this.uploadSucc).catch(err => console.log(err))
     },
-    uploadSucc (res) {
-      // console.log(res.data)
-      if (res.data.code == 2000) {
-        this.list.push(res.data.data.url)
-      }
-    },
+
     deleteImage (e) {
-      console.log(111, e)
-    },
-    submit () {
-      if (this.active == 0) {
-        Toast('请选择评价等级')
-        return false
-      }
-      if (!this.txt) {
-        Toast('请输入评价内容')
-        return false
-      }
-      let images = ''
-      if (this.list.length == 1) {
-        images = this.list[0]
-      } else {
-        for (let i=0;i<this.list.length - 1;i++){
-          images = this.list[i] + ',' + this.list[i+1]
+      // 找到需要删除的图片
+      for (let i=0; i<this.list.length; i++) {
+        if (e.content == this.list[i]) {
+          this.list.splice(i, 1)
         }
       }
-      axios.get('/lan/order_comment?order_id=' + this.order_id + '&level=' + this.active + '&content=' + this.txt + '&images=' + images).then(this.submitSucc).catch(err => console.log(err))
+      // console.log(this.list)
+    },
+    submit () {
+      if (this.twice) {
+        if (this.active == 0) {
+          Toast('请选择评价等级')
+          return false
+        }
+        if (!this.txt) {
+          Toast('请输入评价内容')
+          return false
+        }
+        // 关闭节阀流防止多次点击
+        this.twice = false
+        // 格式化图片传参
+        let images = ''
+        if (this.list.length == 1) {
+          images = this.list[0]
+        } else {
+          for (let i=0;i<this.list.length - 1;i++){
+            images = this.list[i] + ',' + this.list[i+1]
+          }
+        }
+        axios.get('/lan/order_comment?order_id=' + this.order_id + '&level=' + this.active + '&content=' + this.txt + '&images=' + images).then(this.submitSucc).catch(err => console.log(err))
+      }
     },
     submitSucc (res) {
       if (res.data.code == 2000) {
         Toast('评论成功')
+        // 评论提交成功后再把所有图片上传到服务器
+        let j = 0
+        let params = {
+          name: ''
+        }
+        for(j=0;j<this.list.length;j++) {
+          params.name = this.list[j]
+          // 调用上传接口
+          axios.post('/lan/upload_img', params).then(res => {
+            if (res.data.code == 2000) {
+              console.log('uploadOk')
+            }
+          })
+        }
+        // 图片上传完成打开节阀流
+        this.twice = true
       } else {
         Toast(res.data.msg)
       }
@@ -173,5 +192,27 @@ export default {
     color: #fff;
     position: fixed;
     bottom: 0;
+  }
+</style>
+
+<style>
+  .van-uploader__preview-image{
+    width: 105px!important;
+    height: 80px!important;
+  }
+  .van-uploader__preview i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: url("../../../static/images/index/close_btn.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .van-uploader__preview-delete{
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    padding: 0.02667rem;
+    color: rgba(255,255,255, 0);
+    background-color: #fff;
   }
 </style>

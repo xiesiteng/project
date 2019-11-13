@@ -64,6 +64,7 @@ export default {
       showAddress: false,
       showpick: false,
       hidshow:true,  //显示或者隐藏footer,
+      goods_id: ''
       }
   },
   mounted () {
@@ -81,7 +82,8 @@ export default {
       };
     }
 
-
+  // 接收提交订单页面中的goods_id
+    this.goods_id = this.$route.query.goods_id
   },
   methods: {
     leave() {
@@ -138,7 +140,7 @@ export default {
       console.log(res.data)
       if (res.data.code == 2000) {
         if (this.$route.query.fromOrder) {
-          this.$router.push('/shop/submitOrder')
+          this.$router.push({path: '/shop/submitOrder', query:{goods_id: this.goods_id}})
         } else {
           this.$router.push('/person/mineAddress')
         }
