@@ -81,7 +81,7 @@
           <span>￥{{info.group_price}}</span>
           <p>开团(3人团)</p>
         </div>
-        <div class="tuan">
+        <div class="tuan" @click="subAlone(info.goods_id)">
           <span>￥{{info.shop_price}}</span>
           <p>单独预约</p>
         </div>
@@ -114,9 +114,15 @@ export default {
         this.info = res.data.data.list
       }
     },
+    // 去拼团
     toPay (goods_id) {
       this.$router.push({path: '/assemble/assemblePay', query: {goods_id: goods_id}})
+    },
+    // 单独预约
+    subAlone (goods_id) {
+      this.$router.push({path: '/subscribe/subscribeNow', query: {goods_id: goods_id}})
     }
+
   }
 }
 </script>

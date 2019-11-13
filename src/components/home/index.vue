@@ -108,7 +108,7 @@
                     <p class="price">{{item.group_price}}</p>
                   </div>
                   <span class="pre-price">￥{{item.shop_price}}</span>
-                  <button class="ping" @click="toAssem">去拼团</button>
+                  <button class="ping" @click="toAssem(item.goods_id)">去拼团</button>
                 </div>
               </div>
             </div>
@@ -302,8 +302,8 @@ export default {
     toIntegral () {
       this.$router.push('/integral/integral')
     },
-    toAssem () {
-      this.$router.push('/assemble/assemblePay')
+    toAssem (goods_id) {
+      this.$router.push({path: '/assemble/assemblePay', query: {goods_id: goods_id}})
     },
     toIntegralDetail (goods_id) {
       this.$router.push({path: '/integral/detail', query:{goods_id: goods_id}})

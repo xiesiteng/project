@@ -137,8 +137,7 @@ export default {
     toShare () {
       // let url = window.location.href
       let url = 'http://ymm.molonglan.top/public/dist/assemble/onAssemble?id=14'
-      // let url = config.ACTION.getWxSignature
-      console.log(url)
+      // let url = location.href.split('#')[0]
       axios.get('/lan/js_api_config?url=' + url).then(this.getConfig).catch(err => console.log(err))
     },
     getConfig (res) {

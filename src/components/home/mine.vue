@@ -2,11 +2,11 @@
     <div>
       <div class="main">
         <div class="header">
-          <div class="person-info">
+          <div class="person-info" @click="toPersonal">
             <!--<img src="../../../static/images/index/logo1.png" alt="" class="head-img">-->
             <img :src="info.headimgurl" alt="" class="head-img">
             <p>{{info.nickname}}</p>
-            <img src="../../../static/images/index/more.png" alt="" class="more-size" @click="toPersonal">
+            <img src="../../../static/images/index/more.png" alt="" class="more-size" >
           </div>
           <!--优惠积分收藏-->
           <div class="sec-info">

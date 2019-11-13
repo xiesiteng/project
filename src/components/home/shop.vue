@@ -16,14 +16,14 @@
             <ul class="nav">
               <li :class="active == 0 ? 'nav-active' : ''" @click="choose(0)">综合排序</li>
               <li :class="active == 1 ? 'nav-active' : ''" @click="choose(1)">销量
-                <img src="../../../static/images/index/sort.png" alt="" v-show="countFlag">
-                <img src="../../../static/images/index/asc.png" alt="" v-show="!count_sort && !countFlag">
-                <img src="../../../static/images/index/desc.png" alt="" v-show="count_sort && !countFlag">
+                <img src="../../../static/images/index/sort.png" alt="" class="sortIcon" v-show="countFlag">
+                <img src="../../../static/images/index/asc.png" alt="" class="sortIcon" v-show="!count_sort && !countFlag">
+                <img src="../../../static/images/index/desc.png" alt="" class="sortIcon" v-show="count_sort && !countFlag">
               </li>
               <li :class="active == 2 ? 'nav-active' : ''" @click="choose(2)">价格
-                <img src="../../../static/images/index/sort.png" alt="" v-show="priceFlag">
-                <img src="../../../static/images/index/asc.png" alt="" v-show="!price_sort && !priceFlag">
-                <img src="../../../static/images/index/desc.png" alt="" v-show="price_sort && !priceFlag">
+                <img src="../../../static/images/index/sort.png" alt="" class="sortIcon" v-show="priceFlag">
+                <img src="../../../static/images/index/asc.png" alt="" class="sortIcon" v-show="!price_sort && !priceFlag">
+                <img src="../../../static/images/index/desc.png" alt="" class="sortIcon" v-show="price_sort && !priceFlag">
               </li>
             </ul>
           </div>
@@ -491,5 +491,9 @@ export default {
   .noPro{
     font-size: 14px;
     color: #999;
+  }
+  .sortIcon{
+    width: 7px;
+    height: 10px;
   }
 </style>
