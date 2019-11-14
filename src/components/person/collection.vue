@@ -26,7 +26,7 @@
                 <em>￥</em>
                 <p class="price">{{item.shop_price}}</p>
               </div>
-              <img src="../../../static/images/index/coll_shop.png" alt="" @click="addtoCar(item.goods_id)">
+              <img src="../../../static/images/index/coll_shop.png" alt="" class="shopCar_icon" @click="addtoCar(item.goods_id)">
             </div>
           </div>
         </div>
@@ -75,6 +75,10 @@ export default {
 </script>
 
 <style scoped>
+  .shopCar_icon{
+    width: 30px;
+    height: 30px;
+  }
   .main{
     background-color: #fff;
     min-height: 100vh;

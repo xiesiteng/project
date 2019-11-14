@@ -12,7 +12,7 @@
       <div class="orderNum">
         <p>预约编号：{{item.order_sn}}</p>
         <!--<span>拼团中</span>-->
-        <img src="../../../static/images/index/delete.png" alt="">
+        <img src="../../../static/images/index/delete.png" alt="" class="del_size" @click="delOrder(item.order_id)">
       </div>
       <div class="info" @click="toUnderway(item.order_id)">
         <div class="info-left">
@@ -32,7 +32,7 @@
       <div class="orderNum">
         <p>预约编号：{{item.order_sn}}</p>
         <!--<span>拼团成功</span>-->
-        <img src="../../../static/images/index/delete.png" alt="">
+        <img src="../../../static/images/index/delete.png" alt="" class="del_size">
       </div>
       <div class="info" @click="toCompleted(item.order_id)">
         <div class="info-left">
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import {Toast} from 'vant'
 import axios from 'axios'
 export default {
   name: "myAssemble",
@@ -82,7 +83,19 @@ export default {
     },
     toCompleted (order_id) {
       this.$router.push({path: '/subscribe/completed', query: {order_id: order_id}})
+    },
+    // 删除订单
+    delOrder (order_id) {
+      axios.get('/lan/order_delete?order_id=' + order_id).then(this.delOrderSucc).catch(err => console.log(err))
+    },
+    delOrderSucc (res) {
+      if (res.data.code == 2000) {
+        this.init()
+      } else {
+        Toast(res.data.msg)
+      }
     }
+
   }
 }
 </script>
@@ -91,6 +104,10 @@ export default {
   .main{
     min-height: 100vh;
     background-color: #fff;
+  }
+  .del_size{
+    width: 18px;
+    height: 18px;
   }
   .size{
     width: 100px;
@@ -112,6 +129,7 @@ export default {
     content: "";
     background: url("../../../static/images/index/heart.png");
     background-repeat:  no-repeat !important;
+    background-size: 100% 100%;
     display: block;
     width: 35px;
     height: 6px;

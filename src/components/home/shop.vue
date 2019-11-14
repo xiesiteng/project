@@ -86,10 +86,10 @@
           </div>-->
           <div class="lately">
             <div>
-              <img src="../../../static/images/index/orderTime.png" alt="">
+              <img src="../../../static/images/index/orderTime.png" alt="" class="lately_search">
               <span>最近搜索</span>
             </div>
-            <img src="../../../static/images/index/delete.png" alt="" @click="deleteKeywords">
+            <img src="../../../static/images/index/delete.png" alt="" class="del_size" @click="deleteKeywords">
           </div>
           <!--最近搜索标签-->
           <div class="tag-wrap">
@@ -153,14 +153,13 @@ export default {
   },
   mounted() {
       this.getGoods()
-      // this.getKeywords()
   },
   methods: {
     getGoods () {
       axios.get('/lan/goods_list?order_by=' + this.order_by  + '&page='+ this.page + '&cat_id=' + this.cat_id + '&order_by_val=' + this.order_by_val).then(this.getGoodsSucc).catch(err => console.log(err))
     },
     getGoodsSucc (res) {
-      // console.log(res.data.data.list)
+      this.enableLoadMore = true
       if (res.data.data.list.length == 0) {
         this.enableLoadMore = false
       }
@@ -192,13 +191,18 @@ export default {
         axios.get('/lan/goods_list?key_words=' + this.value + '&page=' + this.page + '&cat_id=' +this.cat_id).then(this.searchSucc).catch(err => console.log(err))
       },
     searchSucc (res) {
-      console.log(res.data.data)
       if (res.data.code == 2000) {
         this.enableLoadMore = true
+        this.noText = false
         if (res.data.data.list.length == 0) {
           this.enableLoadMore = false
-          this.noText = true
+          this.noText = false
           // return false
+        }
+        if (this.page == 1 && res.data.data.list.length == 0) {
+          this.enableLoadMore = false
+          this.noText = true
+          console.log(this.enableLoadMore, this.noText)
         }
         if (this.clear_flag) {
           this.list = []
@@ -262,6 +266,7 @@ export default {
           }
           //获取数据
           this.getGoods()
+          console.log(this.enableLoadMore)
           break
         case 2:
           this.page = 1
@@ -311,8 +316,9 @@ export default {
     // 下拉加载更多
     onLoadMore(done) {
       setTimeout(()=>{
+        console.log(this.enableLoadMore)
         if(!this.enableLoadMore) {
-          return
+          return false
         }
         this.page++
         if (this.value == '') {
@@ -321,6 +327,7 @@ export default {
           this.onSearch()
         }
         done();
+
       }, 200)
     },
     pickKeywords (keywords) {
@@ -332,9 +339,17 @@ export default {
 </script>
 
 <style scoped>
+  .lately_search{
+    width: 16px;
+    height: 16px;
+  }
+  .del_size{
+    width: 18px;
+    height: 18px;
+  }
   .main{
     min-height: 100vh;
-    margin-bottom: 100px;
+    padding-bottom: 100px;
     background-color: #fff;
   }
   .nav-wrap {}
@@ -355,6 +370,7 @@ export default {
     content: "";
     background: url("../../../static/images/index/heart.png");
     background-repeat:  no-repeat !important;
+    background-size: 100% 100%;
     display: block;
     width: 35px;
     height: 6px;
@@ -446,10 +462,13 @@ export default {
   }
   .onFocus {
     min-height: 100vh;
-    z-index: 999;
+    z-index: 1001;
     display: block;
     position: fixed;
-    left: 0; top: 0; right: 0; bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     background: #fff;
   }
   .search-res{

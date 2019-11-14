@@ -105,7 +105,7 @@ export default {
   }
   .info-content{
     box-sizing: border-box;
-    padding-left: 41px;
+    padding: 0 41px;
     font-size: 15px;
   }
   .disc{

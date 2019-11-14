@@ -152,6 +152,7 @@ export default {
     content: "";
     background: url("../../../static/images/index/heart.png");
     background-repeat:  no-repeat !important;
+    background-size: 100% 100%;
     display: block;
     width: 35px;
     height: 6px;

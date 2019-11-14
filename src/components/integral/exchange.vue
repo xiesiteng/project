@@ -4,7 +4,7 @@
         <div class="exchange" v-for="(item, index) in list" :key="index">
           <div class="exc-title">
             <p>预约编号：{{item.order_sn}}</p>
-            <img src="../../../static/images/index/delete.png" alt="">
+            <img src="../../../static/images/index/delete.png" alt="" class="del_size" @click="delOrder(item.order_id)">
           </div>
           <!--内容-->
           <div class="exc-content">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import {Toast} from 'vant'
 import axios from 'axios'
 import scroll from '../common/scroll'
 export default {
@@ -64,7 +65,19 @@ export default {
         this.init()
         done();
       }, 200)
+    },
+    // 删除订单
+    delOrder (order_id) {
+      axios.get('/lan/order_delete?order_id=' + order_id).then(this.delOrderSucc).catch(err => console.log(err))
+    },
+    delOrderSucc (res) {
+      if (res.data.code == 2000) {
+        this.init()
+      } else {
+        Toast(res.data.msg)
+      }
     }
+
   }
 }
 </script>
@@ -73,6 +86,10 @@ export default {
   .main{
     min-height: 100vh;
     background-color: #fff;
+  }
+  .del_size{
+    width: 18px;
+    height: 18px;
   }
   .size{
     width: 100px;

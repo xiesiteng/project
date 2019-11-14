@@ -97,7 +97,7 @@ export default {
       id: '', // 拼团id
       info: {},
       group_user: [],
-      shareUrl: 'http://ymm.molonglan.top/public/dist/assemble/joinGroup',
+      shareUrl: 'http://ymmqd.molonglan.top/assemble/joinGroup',
       showTime: true,
       // assSucc: false,
       // assFail: false
@@ -135,8 +135,8 @@ export default {
       }
     },
     toShare () {
-      // let url = window.location.href
-      let url = 'http://ymm.molonglan.top/public/dist/assemble/onAssemble?id=14'
+      let url = window.location.href
+      // let url = 'http://ymm.molonglan.top/public/dist/assemble/onAssemble?id=14'
       // let url = location.href.split('#')[0]
       axios.get('/lan/js_api_config?url=' + url).then(this.getConfig).catch(err => console.log(err))
     },

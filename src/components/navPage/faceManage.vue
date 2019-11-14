@@ -91,7 +91,7 @@ export default {
 <style scoped>
   .main{
     min-height: 100vh;
-    margin-bottom: 100px;
+    padding-bottom: 100px;
   }
   .nav-wrap {}
   .nav{
@@ -133,7 +133,7 @@ export default {
     width: 75px;
     height: 26px;
     text-align: center;
-    line-height: 26px;
+    line-height: 30px;
     box-sizing: border-box;
     font-size: 14px;
     margin: 0 10px 10px 0;

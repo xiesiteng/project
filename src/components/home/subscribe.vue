@@ -135,35 +135,14 @@ export default {
       }, 200)
     },
     }
-    // onLoad() {
-    //   console.log(this.list.length, 11)
-    //   if (this.over) {
-    //     this.loading = false;
-    //     this.finished = true;
-    //     return false
-    //   }
-    //   // 异步更新数据
-    //   setTimeout(() => {
-    //
-    //     this.loading = true
-    //     this.page++
-    //     this.getGoods()
-    //     // 加载状态结束
-    //     this.loading = false;
-    //
-    //     // 数据全部加载完成
-    //     // if (this.over) {
-    //     //   this.finished = true;
-    //     // }
-    //   }, 500);
-    // }
+
 }
 </script>
 
 <style scoped>
   .main{
     min-height: 100vh;
-    margin-bottom: 100px;
+    padding-bottom: 100px;
     background-color: #fff;
   }
   .nav-wrap {}
@@ -184,6 +163,7 @@ export default {
     content: "";
     background: url("../../../static/images/index/heart.png");
     background-repeat:  no-repeat !important;
+    background-size: 100% 100%;
     display: block;
     width: 35px;
     height: 6px;

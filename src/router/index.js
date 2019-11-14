@@ -32,11 +32,11 @@ Vue.use(Router)
   ]
 })*/
 const router = new Router({
-  // mode: 'history',
+  mode: 'history',
   // 使用hash模式解决history模式部署到服务器刷新页面可能丢失
-  mode: 'hash',
+  // mode: 'hash',
   // 部署到服务器加上base解决空白页
-  base: '/public/dist/',
+  base: '/',
   routes: [
     {
       path: '/',

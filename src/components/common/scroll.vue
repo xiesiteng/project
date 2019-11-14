@@ -51,7 +51,7 @@
         }
       },
       touchEnd(e) {
-        if (this.isLoading) {
+        if (this.isLoading && !this.enableLoadMore) {
           return;
         }
 
@@ -68,7 +68,8 @@
       },
       doLoadMore() {
         this.isLoading = true
-        this.loadMoreText = '加载中...'
+        // this.loadMoreText = '加载中...'
+        this.loadMoreText = ''
         this.onLoadMore(this.loadDone);
       },
       loadDone() {

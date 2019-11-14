@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main-wrap">
         <div class="main" >
           <van-swipe :autoplay="3000" indicator-color="white">
             <van-swipe-item v-for="(item, index) in bannerList" :key="index">
@@ -361,6 +361,11 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.main-wrap{
+  min-height: 100vh;
+  padding-bottom: 100px;
+  background-color: #fff;
+}
 .main
   background-color #fff
 .countDown
@@ -458,6 +463,7 @@ p
       content: "";
       background: url("../../../static/images/index/heart.png");
       background-repeat:  no-repeat !important;
+      background-size: 100% 100%;
       display: block;
       width: 35px;
       height: 6px;

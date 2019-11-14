@@ -193,6 +193,10 @@ export default {
     position: fixed;
     bottom: 0;
   }
+  .eva-item img{
+    width: 18px;
+    height: 18px;
+  }
 </style>
 
 <style>

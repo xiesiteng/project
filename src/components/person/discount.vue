@@ -101,6 +101,6 @@ export default {
     color: #999;
     display: flex;
     justify-content: center;
-    margin-top: 90px;
+    padding-top: 90px;
   }
 </style>

@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import {Toast} from 'vant'
 import axios from 'axios'
 export default {
   name: "orderDetail",

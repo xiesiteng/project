@@ -16,8 +16,8 @@
             <div class="pro-wrap" v-show="true">
               <div class="pro-left">
                 <!--<div class="box" v-show="!item.flag" @click="pick(index)"></div>-->
-                <img src="../../../static/images/index/no_sel.png" alt="" v-show="item.selected == 0" @click="pick(index, item.id, item.selected)">
-                <img src="../../../static/images/index/sel.png" alt="" v-show="item.selected == 1" @click="pick(index, item.id, item.selected)">
+                <img src="../../../static/images/index/no_sel.png" alt="" class="gou" v-show="item.selected == 0" @click="pick(index, item.id, item.selected)">
+                <img src="../../../static/images/index/sel.png" alt="" class="gou" v-show="item.selected == 1" @click="pick(index, item.id, item.selected)">
               </div>
               <div class="pro-right">
                 <img src="../../../static/images/index/gznf.png" alt="" class="size">
@@ -45,8 +45,8 @@
         <div class="total">
           <div class="all">
             <!--<div class="box" v-show="!selAll" @click="pickAll"></div>-->
-            <img src="../../../static/images/index/no_sel.png" alt="" v-show="!selAll" @click="pickAll">
-            <img src="../../../static/images/index/sel.png" alt="" v-show="selAll" @click="pickAll">
+            <img src="../../../static/images/index/no_sel.png" alt="" class="gou" v-show="!selAll" @click="pickAll">
+            <img src="../../../static/images/index/sel.png" alt="" class="gou" v-show="selAll" @click="pickAll">
             <p>全选</p>
           </div>
           <p>合计：<span>￥{{total_price.total_fee}}</span></p>
@@ -192,6 +192,10 @@ export default {
 </script>
 
 <style scoped>
+  .gou{
+    width: 18px;
+    height: 18px;
+  }
   .main{
     background-color: #fff;
     min-height: 100vh;

@@ -135,7 +135,7 @@ export default {
     color: #15B0AE;
     font-size: 13px;
     border: none;
-    background-color: #fff;
+    background-color: rgba(255,255,255, 0);
   }
   .login{
     position: absolute;

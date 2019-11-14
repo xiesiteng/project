@@ -38,28 +38,28 @@
             <div class="icon-wrap" @click="tomyOrder(1)">
               <div class="icon">
                 <span class="cir" v-show="info.wait_pay_order_num !== 0">{{info.wait_pay_order_num}}</span>
-                <img src="../../../static/images/index/noPay.png" alt="">
+                <img src="../../../static/images/index/noPay.png" alt="" class="icon_small">
               </div>
               <p>待付款</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder(2)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
-                <img src="../../../static/images/index/noSend.png" alt="">
+                <img src="../../../static/images/index/noSend.png" alt="" class="icon_small">
               </div>
               <p>待发货</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder(3)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
-                <img src="../../../static/images/index/noRecive.png" alt="">
+                <img src="../../../static/images/index/noRecive.png" alt="" class="icon_small">
               </div>
               <p>待收货</p>
             </div>
             <div class="icon-wrap" @click="tomyOrder(4)">
               <div class="icon">
                 <span class="cir" v-show="false">12</span>
-                <img src="../../../static/images/index/nobb.png" alt="">
+                <img src="../../../static/images/index/nobb.png" alt="" class="icon_small">
               </div>
               <p>待评价</p>
             </div>
@@ -156,13 +156,17 @@ export default {
 </script>
 
 <style scoped>
+  .icon_small{
+    width: 22px;
+    height: 22px;
+  }
   .more {
     width: 7px;
     height: 12px;
   }
   .main{
     min-height: 100vh!important;
-    margin-bottom: 100px!important;
+    padding-bottom: 50px!important;
     padding: 0;
     background-color: #fff;
   }
