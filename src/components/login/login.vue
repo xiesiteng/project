@@ -54,7 +54,6 @@ export default {
       this.$router.push('/login/forget')
     },
     Login () {
-
       axios.get('/lan/login?admin=' + this.username + '&password=' + this.password).then(this.loginSucc).catch(err => console.log(err))
     },
     loginSucc (res) {
@@ -64,6 +63,8 @@ export default {
         this.$store.commit('setToken', token)
         this.$router.push('/home/index')
         // console.log(localStorage.getItem('token'))
+      } else {
+        Toast(res.data.msg)
       }
     }
   }

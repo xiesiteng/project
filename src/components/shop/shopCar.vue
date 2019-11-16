@@ -110,6 +110,8 @@ export default {
           this.cartList = res.data.data.cartList
           this.total_price = res.data.data.total_price
         }
+      } else {
+        Toast(res.data.msg)
       }
     },
     pick (index, id, selected) {
@@ -119,12 +121,7 @@ export default {
         selected = 0
       }
       axios.get('/lan/edit_cart?id=' + id + '&cart_select=' + selected).then(this.pickSucc).catch(err => console.log(err))
-      // this.cartList[index].selected = !this.cartList[index].selected
-      // if (this.cartList[index].selected == 0) {
-      //   this.cartList[index].selected = 1
-      // } else {
-      //   this.cartList[index].selected = 0
-      // }
+
     },
     pickSucc (res) {
       this.cartList = res.data.data.cartList
@@ -182,6 +179,8 @@ export default {
     deleteSucc (res) {
       if (res.data.code == 2000) {
         this.init()
+      } else {
+        Toast(res.data.msg)
       }
     },
     select () {

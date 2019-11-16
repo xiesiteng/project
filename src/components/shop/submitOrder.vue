@@ -161,6 +161,7 @@
 
 <script>
 import axios from 'axios'
+import {Toast} from 'vant'
 export default {
   name: "submitOrder",
   data () {
@@ -212,6 +213,8 @@ export default {
           // }
           // console.log(this.disList)
         }
+      } else {
+        Toast(res.data.msg)
       }
     },
     getAddress () {
@@ -230,6 +233,8 @@ export default {
       if (res.data.code == 2000) {
         this.cart_selected = res.data.data.cart_selected
         this.total_price = res.data.data.total_price
+      } else {
+        Toast(res.data.msg)
       }
     },
     chooseDiscount () {

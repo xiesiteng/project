@@ -72,9 +72,13 @@ export default {
     },
     getDetailSucc (res) {
       // console.log(res.data.data)
-      this.info = res.data.data.list
-      this.is_collect = res.data.data.is_collect
-      this.goods_images = res.data.data.goods_images
+      if (res.data.code == 2000) {
+        this.info = res.data.data.list
+        this.is_collect = res.data.data.is_collect
+        this.goods_images = res.data.data.goods_images
+      } else {
+        Toast(res.data.msg)
+      }
     },
     buyNow (goods_id) {
       this.$router.push({path: '/shop/submitOrder', query: {goods_id: goods_id}})
@@ -85,6 +89,8 @@ export default {
     collectSucc (res) {
       if (res.data.code == 2000) {
         this.getDetail()
+      } else {
+        Toast(res.data.msg)
       }
     },
     addtoCar () {

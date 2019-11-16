@@ -37,14 +37,7 @@ export default {
     this.newName = this.preName
   },
   methods: {
-    // getName () {
-    //   axios.get('/lan/user_edit?nickname=' + this.newName).then(this.getNameSucc).catch(err => console.log(err))
-    // },
-    // getNameSucc (res) {
-    //   console.log(res.data.data)
-    //   this.preName = res.data.data.nickname
-    //   this.newName = res.data.data.nickname
-    // },
+
     clear () {
       this.newName = ''
     },
@@ -63,6 +56,8 @@ export default {
     changeSucc (res) {
       if (res.data.code == 2000) {
         this.$router.push('/person/personal')
+      } else {
+        Toast(res.data.msg)
       }
     }
   }

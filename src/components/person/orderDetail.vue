@@ -116,9 +116,12 @@ export default {
       axios.get('/lan/order_details?order_id=' + this.order_id).then(this.initSucc).catch(err => console.log(err))
     },
     initSucc (res) {
-      // console.log(res.data.data)
-      this.info = res.data.data
-      this.order_goods = res.data.data.order_goods
+      if (res.data.code == 2000) {
+        this.info = res.data.data
+        this.order_goods = res.data.data.order_goods
+      } else {
+        Toast(res.data.msg)
+      }
     },
     cancelOrder (order_id) {
       axios.get('/lan/order_cancel?order_id=' + order_id).then(this.cancelOrderSucc).catch(err => console.log(err))
@@ -126,6 +129,8 @@ export default {
     cancelOrderSucc (res) {
       if (res.data.code == 2000) {
         this.init()
+      } else {
+        Toast(res.data.msg)
       }
     },
     toPay (order_id) {
@@ -140,6 +145,8 @@ export default {
     reciveSucc (res) {
       if (res.data.code == 2000) {
         this.init()
+      } else {
+        Toast(res.data.msg)
       }
     },
     evaluate (order_id) {

@@ -115,6 +115,8 @@ export default {
           this.enableLoadMore = false
         }
         this.list = this.list.concat(res.data.data.list)
+      } else {
+        Toast(res.data.msg)
       }
     },
     choose (val) {

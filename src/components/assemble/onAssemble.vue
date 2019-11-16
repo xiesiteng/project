@@ -298,6 +298,7 @@ export default {
     box-sizing: border-box;
     padding: 0 15px;
     margin-bottom: 10px;
+    padding-bottom: 50px;
   }
   .play-head{
     display: flex;

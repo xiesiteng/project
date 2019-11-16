@@ -144,6 +144,8 @@ export default {
         } else {
           this.$router.push('/person/mineAddress')
         }
+      } else {
+        Toast(res.data.msg)
       }
     }
 
