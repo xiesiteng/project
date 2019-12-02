@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "../store";
+import router from '../router'
 
 axios.defaults.baseURL= 'http://ymm.molonglan.top'
 axios.defaults.headers.post['Content-Type'] = "application/json"

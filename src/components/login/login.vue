@@ -41,7 +41,7 @@ export default {
       }
   },
   mounted() {
-
+    console.log(this.$route.query.redirect)
   },
   methods: {
     leave() {
@@ -61,7 +61,8 @@ export default {
       let token = res.data.data.tk
       if (res.data.code == 2000) {
         this.$store.commit('setToken', token)
-        this.$router.push('/home/index')
+        // this.$router.push('/home/index')
+        this.$router.push(this.$route.query.redirect)
         // console.log(localStorage.getItem('token'))
       } else {
         Toast(res.data.msg)
